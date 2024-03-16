@@ -28,6 +28,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+//First commit
+//Test
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
