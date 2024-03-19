@@ -26,6 +26,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -57,28 +58,26 @@ class SignUp : ComponentActivity() {
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun gender(){
-    val genders = listOf("Male", "Female", "Non-binary", "Genderqueer", "Genderfluid", "Transgender", "Prefer not to say")
+fun gender(
+) {
+    val genders = listOf( "Prefer not to say", "Male", "Female", "Non-binary", "Genderqueer", "Genderfluid", "Transgender")
     var isExpanded by remember { mutableStateOf(false) }
     var selectedGender by remember { mutableStateOf(genders[0]) }
-
     ExposedDropdownMenuBox(
         expanded = isExpanded,
         onExpandedChange = { isExpanded = it },
-    ){
-        TextField(
-            modifier = Modifier
-                .menuAnchor()
-                .fillMaxWidth()
-                .focusProperties {
-                    canFocus = false
-                }
+    ) {
+        OutlinedTextField(
+            modifier = Modifier .menuAnchor()
+                .fillMaxWidth() .focusProperties{
+                    canFocus = false}
                 .padding(8.dp), readOnly = true,
             value = selectedGender,
             onValueChange = {},
             label = { Text("Gender") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
         )
+
         ExposedDropdownMenu(
             expanded = isExpanded,
             onDismissRequest = { isExpanded = false } )
@@ -93,6 +92,7 @@ fun gender(){
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun signUp() {
@@ -100,6 +100,8 @@ fun signUp() {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var selectedGender by remember { mutableStateOf("") }
+
 
     Surface(
         color = Color(0xFF6A8DCC), // Set the background color for the column
@@ -123,16 +125,12 @@ fun signUp() {
                     color = Color.White // Set text color to white
                 )
             }
-
-
-
-
             Surface(
                 color = Color.White,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
-                shape = RoundedCornerShape(topStart = 30.dp, topEnd = 180.dp)
+                shape = RoundedCornerShape(topStart = 25.dp, topEnd = 150.dp)
             ) {
                 Box(modifier = Modifier.padding(10.dp)) {
                     Column(
@@ -173,7 +171,9 @@ fun signUp() {
                                 .padding(8.dp)
                         )
 
-                        gender()
+                        gender(
+
+                        )
 
                         Button(
                             onClick = {},
@@ -200,7 +200,7 @@ fun signUp() {
                         Text(
                             text = "Or",
                             modifier = Modifier
-                                .padding(top = 20.dp,
+                                .padding(top = 10.dp,
                                     start = 8.dp,
                                     end = 8.dp, bottom = 10.dp)
                         )

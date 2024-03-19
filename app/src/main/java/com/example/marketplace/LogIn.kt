@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            signIn()
+            SignIn()
         }
 
         WindowCompat.setDecorFitsSystemWindows(window,false)
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun signIn() {
+fun SignIn() {
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -153,7 +153,7 @@ fun signIn() {
                         )
 
                         Card(
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onTertiary,),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onTertiary),
                             border = BorderStroke(0.001.dp, Color.Gray),
                             modifier = Modifier.size(width = 120.dp, height = 38.dp)
 
