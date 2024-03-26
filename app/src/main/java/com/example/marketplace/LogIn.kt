@@ -38,15 +38,20 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import com.example.marketplace.ui.theme.MarketplaceTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SignIn()
+//            SignIn()
+//            TODO: remove this
+            MarketplaceTheme {
+                FavScreen()
+            }
         }
 
-        WindowCompat.setDecorFitsSystemWindows(window,false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 }
 
@@ -67,8 +72,9 @@ fun SignIn() {
             Box(
                 modifier = Modifier
                     .weight(0.4f)
-                    .fillMaxHeight().padding(30.dp),
-                   // .align(Alignment.CenterHorizontally),
+                    .fillMaxHeight()
+                    .padding(30.dp),
+                // .align(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.CenterStart,
 
                 ) {
@@ -147,17 +153,17 @@ fun SignIn() {
                         Text(
                             text = "Or",
                             modifier = Modifier
-                                .padding(top = 30.dp,
+                                .padding(
+                                    top = 30.dp,
                                     start = 8.dp,
-                                    end = 8.dp, bottom = 10.dp)
+                                    end = 8.dp, bottom = 10.dp
+                                )
                         )
 
                         Card(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onTertiary),
                             border = BorderStroke(0.001.dp, Color.Gray),
-                            modifier = Modifier.size(width = 120.dp, height = 38.dp)
-
-                            ,
+                            modifier = Modifier.size(width = 120.dp, height = 38.dp),
                             shape = RoundedCornerShape(10.dp)
                         ) {
                             Row(
@@ -178,9 +184,6 @@ fun SignIn() {
                                 )
                             }
                         }
-
-
-
 
 
                     }
