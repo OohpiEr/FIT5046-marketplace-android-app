@@ -115,6 +115,7 @@ fun ChatScreen() {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = innerPadding.calculateTopPadding())
+                    .padding(bottom = 20.dp)
             ) {
                 Divider(color = Color.Gray, thickness = 1.dp)
                 LazyColumn(modifier = Modifier.weight(1f)) {
