@@ -1,5 +1,6 @@
 package com.example.marketplace
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -68,7 +69,8 @@ fun SignIn() {
             Box(
                 modifier = Modifier
                     .weight(0.4f)
-                    .fillMaxHeight().padding(30.dp),
+                    .fillMaxHeight()
+                    .padding(30.dp),
                    // .align(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.CenterStart,
 
