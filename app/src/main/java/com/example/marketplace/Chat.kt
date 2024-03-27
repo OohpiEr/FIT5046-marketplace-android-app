@@ -276,7 +276,7 @@ fun ContactScreen() {
     },
         bottomBar = {
             BottomAppBar(
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                modifier = Modifier.fillMaxWidth().height(80.dp),
                 actions = {
                     Row(
                         horizontalArrangement = Arrangement.Center,

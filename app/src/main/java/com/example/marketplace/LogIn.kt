@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
 //            SignIn()
 //            TODO: remove this
             MarketplaceTheme {
-                FavScreen()
+                SignIn()
             }
         }
 
