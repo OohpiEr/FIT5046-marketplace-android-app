@@ -47,8 +47,10 @@ class MainActivity : ComponentActivity() {
 //            SignIn()
 //            TODO: remove this
             MarketplaceTheme {
-                FavScreen()
+                ChatScreen()
             }
+
+
         }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)

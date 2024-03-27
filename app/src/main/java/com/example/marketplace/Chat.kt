@@ -19,10 +19,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -277,34 +282,41 @@ fun ContactScreen() {
     },
         bottomBar = {
             BottomAppBar(
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                modifier = Modifier.fillMaxWidth().height(80.dp),
                 actions = {
                     Row(
-                        horizontalArrangement = Arrangement.Center,
+                        horizontalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier
                             .fillMaxWidth()
                     ){
                         IconButton(onClick = { /* do something */ }) {
-                            Icon(Icons.Filled.Check, contentDescription = "Localized description")
+                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
                         }
                         IconButton(onClick = { /* do something */ }) {
                             Icon(
-                                Icons.Filled.Edit,
+                                Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
                             )
                         }
                         IconButton(onClick = { /* do something */ }) {
                             Icon(
-                                Icons.Filled.AccountBox,
+                                Icons.Filled.Add,
                                 contentDescription = "Localized description",
                             )
                         }
                         IconButton(onClick = { /* do something */ }) {
                             Icon(
-                                Icons.Filled.Build,
+                                Icons.Filled.Favorite,
                                 contentDescription = "Localized description",
                             )
                         }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.AccountCircle,
+                                contentDescription = "Localized description",
+                            )
+                        }
+
                     }}
             )
         },

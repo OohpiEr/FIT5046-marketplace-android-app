@@ -16,9 +16,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -119,8 +125,48 @@ fun FavScreen() {
                 scrollBehavior = scrollBehavior
             )
         },
-    ) { innerPadding ->
-        FavScrollContent(innerPadding)
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier.fillMaxWidth().height(80.dp),
+                actions = {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ){
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+                        }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.MailOutline,
+                                contentDescription = "Localized description",
+                            )
+                        }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.Add,
+                                contentDescription = "Localized description",
+                            )
+                        }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.Favorite,
+                                contentDescription = "Localized description",
+                            )
+                        }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.AccountCircle,
+                                contentDescription = "Localized description",
+                            )
+                        }
+
+                    }}
+            )
+        },
+    )  { innerPadding ->
+        HomeScrollContent(innerPadding)
     }
 
 }
