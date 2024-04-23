@@ -290,33 +290,26 @@ fun ContactScreen() {
                             .fillMaxWidth()
                     ){
                         IconButton(onClick = { /* do something */ }) {
-                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+                            Icon(Icons.Filled.Check, contentDescription = "Localized description")
                         }
                         IconButton(onClick = { /* do something */ }) {
                             Icon(
-                                Icons.Filled.MailOutline,
+                                Icons.Filled.Edit,
                                 contentDescription = "Localized description",
                             )
                         }
                         IconButton(onClick = { /* do something */ }) {
                             Icon(
-                                Icons.Filled.Add,
+                                Icons.Filled.AccountBox,
                                 contentDescription = "Localized description",
                             )
                         }
                         IconButton(onClick = { /* do something */ }) {
                             Icon(
-                                Icons.Filled.Favorite,
+                                Icons.Filled.Build,
                                 contentDescription = "Localized description",
                             )
                         }
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                Icons.Filled.AccountCircle,
-                                contentDescription = "Localized description",
-                            )
-                        }
-
                     }}
             )
         },
