@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "609662175459",
+    "project_id": "fit5046-assignment-8c7f4",
+    "storage_bucket": "fit5046-assignment-8c7f4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609662175459:android:0f89c860cac48c0ad7ddd6",
+        "android_client_info": {
+          "package_name": "com.example.marketplace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqA2o7eAGAsnLq0sOwKH8QkPFQ9JumIbo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
