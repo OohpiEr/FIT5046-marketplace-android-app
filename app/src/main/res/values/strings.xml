@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Assignment01</string>
+    <string name="default_web_client_id">null</string>
 
 </resources>

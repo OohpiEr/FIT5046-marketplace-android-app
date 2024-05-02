@@ -49,6 +49,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
+import com.example.assignment01.R
 import com.example.marketplace.ui.theme.MarketplaceTheme
 
 class Favourites : ComponentActivity() {
