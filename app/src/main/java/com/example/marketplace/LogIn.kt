@@ -1,6 +1,10 @@
 package com.example.marketplace
-
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -33,30 +37,53 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-class MainActivity : ComponentActivity() {
+
+class LogIn : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SignIn()
+            val firebaseDatabase = FirebaseDatabase.getInstance();
+            val databaseReference = firebaseDatabase.getReference("UserInfo");
+            val navController = rememberNavController()
+
+            NavHost(navController = navController, startDestination = "login") {
+                composable("login") { SignIn(navController, databaseReference = databaseReference) }
+                composable("signup") { SignUp(navController, databaseReference = databaseReference) }
+            }
         }
 
         WindowCompat.setDecorFitsSystemWindows(window,false)
     }
 }
 
-
-@Preview(showBackground = true)
 @Composable
-fun SignIn() {
+fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
+
+
+
+    val context= LocalContext.current
 
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var usernameDB by remember { mutableStateOf("") }
+    var passwordDB by remember { mutableStateOf("") }
 
     Surface(
         color = Color(0xFF6A8DCC), // Set the background color for the column
@@ -67,28 +94,26 @@ fun SignIn() {
             Box(
                 modifier = Modifier
                     .weight(0.4f)
-                    .fillMaxHeight().padding(30.dp),
-                   // .align(Alignment.CenterHorizontally),
+                    .fillMaxHeight()
+                    .padding(30.dp),
                 contentAlignment = Alignment.CenterStart,
 
                 ) {
 
                 Text(
-                    text = "Good Day ☘",
-                    style = MaterialTheme.typography.headlineLarge, // Use a larger text style
+                    text = "☘",
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.SemiBold,// Use a larger text style
                     color = Color.White // Set text color to white
                 )
             }
-
-
-
 
             Surface(
                 color = Color.White,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
-                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 200.dp)
+                shape = RoundedCornerShape(topStart = 10.dp, topEnd = 150.dp)
             ) {
                 Box(modifier = Modifier.padding(10.dp)) {
                     Column(
@@ -122,7 +147,31 @@ fun SignIn() {
                         )
 
                         Button(
-                            onClick = {},
+                            onClick = {
+                                databaseReference.addListenerForSingleValueEvent(object :
+                                    ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    val userObj = snapshot.getValue(UserObj::class.java)
+                                    if(userObj!=null){
+                                        usernameDB = userObj.userUsername
+                                        passwordDB = userObj.userPassword
+                                        if(usernameDB.equals(username) && passwordDB.equals(password)){
+                                            Toast.makeText(context,"Log In Succeed!",Toast.LENGTH_SHORT).show()
+                                        }
+                                        else{
+                                            Toast.makeText(context,"Log In Fail!",Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    // calling on cancelled method when we receive
+                                    // any error or we are not able to get the data.
+                                    Toast.makeText(context, "Fail to get data.", Toast.LENGTH_SHORT).show()
+                                }
+                            })},
+
+
                             shape = RectangleShape,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -137,13 +186,25 @@ fun SignIn() {
                             Text(text = "Log In")
                         }
 
-                        Text(
-                            text = "Don't have an account? Sign Up",
+                        Button(
+                            onClick = { navController.navigate("signup") },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
+                                .padding(top = 13.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFFF)),
+                        ) {
+                            Text(
+                                buildAnnotatedString {
+                                    append("Don't have an account? ")
+                                    withStyle(style = SpanStyle(color = Color(0xFF6A8DCC))) {
+                                        append("Sign Up")
+                                    }
+                                },
+                                color = Color.Black
+                            )
 
-                        )
+                        }
+
                         Text(
                             text = "Or",
                             modifier = Modifier
@@ -178,11 +239,6 @@ fun SignIn() {
                                 )
                             }
                         }
-
-
-
-
-
                     }
                 }
             }
