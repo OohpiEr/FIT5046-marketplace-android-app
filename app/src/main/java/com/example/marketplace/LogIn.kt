@@ -6,19 +6,25 @@ import androidx.navigation.compose.composable
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -69,7 +75,7 @@ class LogIn : ComponentActivity() {
             }
         }
 
-        WindowCompat.setDecorFitsSystemWindows(window,false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 }
 
@@ -208,17 +214,17 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                         Text(
                             text = "Or",
                             modifier = Modifier
-                                .padding(top = 30.dp,
+                                .padding(
+                                    top = 30.dp,
                                     start = 8.dp,
-                                    end = 8.dp, bottom = 10.dp)
+                                    end = 8.dp, bottom = 10.dp
+                                )
                         )
 
                         Card(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onTertiary),
                             border = BorderStroke(0.001.dp, Color.Gray),
-                            modifier = Modifier.size(width = 120.dp, height = 38.dp)
-
-                            ,
+                            modifier = Modifier.size(width = 120.dp, height = 38.dp),
                             shape = RoundedCornerShape(10.dp)
                         ) {
                             Row(
@@ -227,16 +233,9 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center,
                             ) {
-                                Image(
-                                    modifier = Modifier.size(20.dp),
-                                    painter = painterResource(id = R.drawable.googleicon),
-                                    contentDescription = "Google Sign In"
-                                )
-                                Text(
-                                    text = "Log In",
-                                    modifier = Modifier
-                                        .padding(start = 9.dp)
-                                )
+
+                                GoogleLoginButton()
+
                             }
                         }
                     }
@@ -245,4 +244,61 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
         }
     }
 
+}
+
+@Composable
+fun GoogleLoginButton() {
+    val context = LocalContext.current
+    val signInLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                account?.idToken?.let { firebaseAuthWithGoogle(context, it) }
+            } catch (e: ApiException) {
+                // Handle login failure
+            }
+        }
+    }
+
+    val googleSignInClient = rememberGoogleSignInClient(context)
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable {
+            val signInIntent = googleSignInClient.signInIntent
+            signInLauncher.launch(signInIntent)
+        }
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.googleicon),
+            contentDescription = "Google Sign In",
+            modifier = Modifier.padding(start = 8.dp).size(20.dp)
+        )
+
+        Text("Sign in with Google")
+    }
+}
+
+@Composable
+private fun rememberGoogleSignInClient(context: Context): GoogleSignInClient {
+    val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(context.getString(R.string.default_web_client_id))
+        .requestEmail()
+        .build()
+    return GoogleSignIn.getClient(context, options)
+}
+
+private fun firebaseAuthWithGoogle(context: Context, idToken: String) {
+    val credential = GoogleAuthProvider.getCredential(idToken, null)
+    FirebaseAuth.getInstance().signInWithCredential(credential)
+        .addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val user = FirebaseAuth.getInstance().currentUser
+                val email = user?.email
+                Toast.makeText(context, email, Toast.LENGTH_SHORT).show()
+            } else {
+                // Handle login failure
+            }
+        }
 }

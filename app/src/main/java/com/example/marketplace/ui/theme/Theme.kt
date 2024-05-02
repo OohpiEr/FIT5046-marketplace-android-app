@@ -1,70 +1,91 @@
 package com.example.marketplace.ui.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+
+private val LightColors = lightColorScheme(
+    primary = marketplace_light_primary,
+    onPrimary = marketplace_light_onPrimary,
+    primaryContainer = marketplace_light_primaryContainer,
+    onPrimaryContainer = marketplace_light_onPrimaryContainer,
+    secondary = marketplace_light_secondary,
+    onSecondary = marketplace_light_onSecondary,
+    secondaryContainer = marketplace_light_secondaryContainer,
+    onSecondaryContainer = marketplace_light_onSecondaryContainer,
+    tertiary = marketplace_light_tertiary,
+    onTertiary = marketplace_light_onTertiary,
+    tertiaryContainer = marketplace_light_tertiaryContainer,
+    onTertiaryContainer = marketplace_light_onTertiaryContainer,
+    error = marketplace_light_error,
+    errorContainer = marketplace_light_errorContainer,
+    onError = marketplace_light_onError,
+    onErrorContainer = marketplace_light_onErrorContainer,
+    background = marketplace_light_background,
+    onBackground = marketplace_light_onBackground,
+    surface = marketplace_light_surface,
+    onSurface = marketplace_light_onSurface,
+    surfaceVariant = marketplace_light_surfaceVariant,
+    onSurfaceVariant = marketplace_light_onSurfaceVariant,
+    outline = marketplace_light_outline,
+    inverseOnSurface = marketplace_light_inverseOnSurface,
+    inverseSurface = marketplace_light_inverseSurface,
+    inversePrimary = marketplace_light_inversePrimary,
+    surfaceTint = marketplace_light_surfaceTint,
+    outlineVariant = marketplace_light_outlineVariant,
+    scrim = marketplace_light_scrim,
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val DarkColors = darkColorScheme(
+    primary = marketplace_dark_primary,
+    onPrimary = marketplace_dark_onPrimary,
+    primaryContainer = marketplace_dark_primaryContainer,
+    onPrimaryContainer = marketplace_dark_onPrimaryContainer,
+    secondary = marketplace_dark_secondary,
+    onSecondary = marketplace_dark_onSecondary,
+    secondaryContainer = marketplace_dark_secondaryContainer,
+    onSecondaryContainer = marketplace_dark_onSecondaryContainer,
+    tertiary = marketplace_dark_tertiary,
+    onTertiary = marketplace_dark_onTertiary,
+    tertiaryContainer = marketplace_dark_tertiaryContainer,
+    onTertiaryContainer = marketplace_dark_onTertiaryContainer,
+    error = marketplace_dark_error,
+    errorContainer = marketplace_dark_errorContainer,
+    onError = marketplace_dark_onError,
+    onErrorContainer = marketplace_dark_onErrorContainer,
+    background = marketplace_dark_background,
+    onBackground = marketplace_dark_onBackground,
+    surface = marketplace_dark_surface,
+    onSurface = marketplace_dark_onSurface,
+    surfaceVariant = marketplace_dark_surfaceVariant,
+    onSurfaceVariant = marketplace_dark_onSurfaceVariant,
+    outline = marketplace_dark_outline,
+    inverseOnSurface = marketplace_dark_inverseOnSurface,
+    inverseSurface = marketplace_dark_inverseSurface,
+    inversePrimary = marketplace_dark_inversePrimary,
+    surfaceTint = marketplace_dark_surfaceTint,
+    outlineVariant = marketplace_dark_outlineVariant,
+    scrim = marketplace_dark_scrim,
 )
 
 @Composable
 fun MarketplaceTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+  useDarkTheme: Boolean = isSystemInDarkTheme(),
+  content: @Composable() () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+  val colors = if (!useDarkTheme) {
+    LightColors
+  } else {
+    DarkColors
+  }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
-    }
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+  MaterialTheme(
+    colorScheme = colors,
+    content = content
+  )
 }
+
