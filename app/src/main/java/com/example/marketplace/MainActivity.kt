@@ -1,4 +1,4 @@
-package com.example.assignment01
+package com.example.marketplace
 
 import android.annotation.SuppressLint
 import android.net.Uri

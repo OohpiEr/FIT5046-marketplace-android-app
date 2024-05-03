@@ -1,4 +1,4 @@
-package com.example.assignment01
+package com.example.marketplace
 
 import android.net.Uri
 import androidx.room.Entity

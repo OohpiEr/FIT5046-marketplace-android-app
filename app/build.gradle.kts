@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.assignment01"
+    namespace = "com.example.marketplace"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.assignment01"
+        applicationId = "com.example.marketplace"
         minSdk = 27
         targetSdk = 34
         versionCode = 1
@@ -77,6 +77,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.room:room-common:2.6.1")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.11.1")
     ksp("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.1")

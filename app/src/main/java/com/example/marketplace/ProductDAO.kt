@@ -1,4 +1,4 @@
-package com.example.assignment01
+package com.example.marketplace
 
 import androidx.room.Dao
 import androidx.room.Delete
