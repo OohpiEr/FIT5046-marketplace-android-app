@@ -78,6 +78,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.room:room-common:2.6.1")
     implementation("com.google.firebase:firebase-firestore-ktx:24.11.1")
+    implementation("com.google.firebase:firebase-firestore:25.0.0")
     ksp("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.1")

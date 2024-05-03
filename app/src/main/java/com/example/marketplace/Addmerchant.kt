@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
+import com.google.firebase.firestore.FirebaseFirestore
 
 class Addmerchant {
 
@@ -59,6 +60,8 @@ class Addmerchant {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMerchant(productViewModel: ProductViewModel){
+    val firestore = FirebaseFirestore.getInstance()
+    val productsCollection = firestore.collection("products")
     var imageUri: Uri? by remember {
         mutableStateOf(null)
     }
@@ -264,6 +267,16 @@ fun AddMerchant(productViewModel: ProductViewModel){
                         Button(onClick = {
                             productViewModel.insertProduct(
                                 Product(name = name,photo = imageUri.toString(),price = price, quantity = quantity, state = selectedState,address = address, description = description ))
+                            val newProduct = hashMapOf(
+                                "name" to name,
+                                "photo" to imageUri.toString(),
+                                "price" to price,
+                                "quantity" to quantity,
+                                "state" to selectedState,
+                                "address" to address,
+                                "description" to description
+                            )
+                            productsCollection.add(newProduct)
                             Toast.makeText(context, "Product added successfully", Toast.LENGTH_SHORT).show()
                             showDialog = false
                         }) {
