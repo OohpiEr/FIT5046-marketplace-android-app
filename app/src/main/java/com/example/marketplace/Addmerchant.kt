@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -47,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -107,7 +109,7 @@ fun AddMerchant(productViewModel: ProductViewModel){
         Column(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding() ) {
+            .padding(start = 4.dp) ) {
 
             Row(modifier = Modifier
                 .padding(start = 8.dp, top = 30.dp)) {
@@ -151,7 +153,7 @@ fun AddMerchant(productViewModel: ProductViewModel){
                 modifier = Modifier
                     .width(375.dp)
                     .height(65.dp)
-                    .padding(4.dp)
+//
             )
             OutlinedTextField(
                 value = price,
@@ -161,7 +163,7 @@ fun AddMerchant(productViewModel: ProductViewModel){
                 modifier = Modifier
                     .width(375.dp)
                     .height(65.dp)
-                    .padding(4.dp)
+
             )
             OutlinedTextField(
                 value = quantity,
@@ -171,7 +173,7 @@ fun AddMerchant(productViewModel: ProductViewModel){
                 modifier = Modifier
                     .width(375.dp)
                     .height(65.dp)
-                    .padding(4.dp)
+
             )
             Row(modifier = Modifier.padding(start = 8.dp, top = 8.dp), horizontalArrangement= Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically) {
@@ -218,7 +220,7 @@ fun AddMerchant(productViewModel: ProductViewModel){
                         onValueChange = { address = it },
                         label = { Text("address", fontSize = 10.sp, fontStyle = FontStyle.Italic) },
                         modifier = Modifier
-                            .width(250.dp)
+                            .width(260.dp)
                             .height(65.dp)
                     )
                 }
@@ -230,7 +232,7 @@ fun AddMerchant(productViewModel: ProductViewModel){
                 modifier = Modifier
                     .width(375.dp)
                     .height(65.dp)
-                    .padding(4.dp)
+
             )
             OutlinedTextField(
                 value = description,
@@ -239,7 +241,7 @@ fun AddMerchant(productViewModel: ProductViewModel){
                 modifier = Modifier
                     .width(375.dp)
                     .height(100.dp)
-                    .padding(4.dp)
+
             )
             Row(modifier = Modifier.padding(start = 8.dp, top = 8.dp)){
                 Box(modifier = Modifier
