@@ -6,7 +6,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -20,12 +19,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -50,10 +51,11 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import com.example.marketplace.ui.theme.marketplace_light_primary
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -65,25 +67,19 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.FirebaseApp
-import com.example.marketplace.ui.theme.*
+
 
 class LogIn : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
-        val firebaseDatabase = FirebaseDatabase.getInstance();
-        val databaseReference = firebaseDatabase.getReference("UserInfo");
-        val viewModel = MessageViewModel()
-
         setContent {
+            val firebaseDatabase = FirebaseDatabase.getInstance();
+            val databaseReference = firebaseDatabase.getReference("UserInfo");
             val navController = rememberNavController()
+
             NavHost(navController = navController, startDestination = "login") {
                 composable("login") { SignIn(navController, databaseReference = databaseReference) }
                 composable("signup") { SignUp(navController, databaseReference = databaseReference) }
-                composable("contact") { ContactScreen(viewModel,navController) }
-                composable("chat") { ChatScreen(navController) }
-                composable("home"){ HomeScreen(navController)}
             }
         }
 
@@ -94,40 +90,50 @@ class LogIn : ComponentActivity() {
 @Composable
 fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var emailDB by remember { mutableStateOf("") }
-    var passwordDB by remember { mutableStateOf("") }
-    var genderDB by remember { mutableStateOf("") }
-    var usernameDB by remember{ mutableStateOf("") }
+
+
     val context= LocalContext.current
-    val emailKey = email.replace(".", ",")
+
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var usernameDB by remember { mutableStateOf("") }
+    var passwordDB by remember { mutableStateOf("") }
+
     Surface(
-        color = marketplace_light_primary, // Set the background color for the column
+        color = Color(0xFF6A8DCC), // Set the background color for the column
         modifier = Modifier.fillMaxSize()
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
+            // Box occupying the left half of the screen
             Box(
                 modifier = Modifier
                     .weight(0.4f)
                     .fillMaxHeight()
                     .padding(30.dp),
                 contentAlignment = Alignment.CenterStart,
+
                 ) {
+
                 Text(
                     text = "☘",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.SemiBold,// Use a larger text style
                     color = Color.White // Set text color to white
-                ) }
+                )
+            }
+
             Surface(
                 color = Color.White,
-                modifier = Modifier.weight(1f).fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 shape = RoundedCornerShape(topStart = 10.dp, topEnd = 150.dp)
             ) {
                 Box(modifier = Modifier.padding(10.dp)) {
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(16.dp), // padding for the Column
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp), // padding for the Column
                         verticalArrangement = Arrangement.Center, // center vertically
                         horizontalAlignment = Alignment.CenterHorizontally // center horizontally
                     ) {
@@ -137,54 +143,48 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                             modifier = Modifier.padding(bottom = 13.dp, start = 8.dp, end = 8.dp)
                         )
                         OutlinedTextField(
-                            value = email,
-                            onValueChange = { email = it },
-                            label = { Text("Email") },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth().padding(8.dp)
+                            value = username,
+                            onValueChange = { username = it },
+                            label = { Text("Username") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
                         )
                         OutlinedTextField(
                             value = password,
                             onValueChange = { password = it },
                             label = { Text("Password") },
-                            singleLine = true,
                             visualTransformation = PasswordVisualTransformation(),
-                            modifier = Modifier.fillMaxWidth().padding(8.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
                         )
 
                         Button(
                             onClick = {
-                                // Example usage of validateInput in login logic
-                                if (validateInput(email, password)) {
-                                    databaseReference.child(emailKey).get().addOnSuccessListener { snapshot ->
-                                        val userObj = snapshot.getValue(UserObj::class.java)
-                                        userObj?.let {
-                                            emailDB = it.userEmail
-                                            passwordDB = it.userPassword
-                                            genderDB = it.userGender
-                                            usernameDB = it.userUsername
-
-                                            if(emailDB.equals(email) && passwordDB.equals(password)) {
-                                                Toast.makeText(context, "Log In Succeed!", Toast.LENGTH_SHORT).show()
-                                                navController.currentBackStackEntry?.savedStateHandle?.set("email", emailDB)
-                                                navController.navigate("home")
-
-                                            } else{
-                                                Toast.makeText(context,"Incorrect email or password!",Toast.LENGTH_SHORT).show()
-                                            }
-                                        } ?: run {
-                                            // UserObj is null
-                                            Toast.makeText(context, "User data not found!", Toast.LENGTH_SHORT).show()
+                                databaseReference.addListenerForSingleValueEvent(object :
+                                    ValueEventListener {
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    val userObj = snapshot.getValue(UserObj::class.java)
+                                    if(userObj!=null){
+                                        usernameDB = userObj.userUsername
+                                        passwordDB = userObj.userPassword
+                                        if(usernameDB.equals(username) && passwordDB.equals(password)){
+                                            Toast.makeText(context,"Log In Succeed!",Toast.LENGTH_SHORT).show()
                                         }
-                                    }.addOnFailureListener { error ->
-                                        // Handle failure to retrieve data from Firebase
-                                        Toast.makeText(context, "Failed to retrieve user data: ${error.message}", Toast.LENGTH_SHORT).show()
+                                        else{
+                                            Toast.makeText(context,"Log In Fail!",Toast.LENGTH_SHORT).show()
+                                        }
                                     }
-                                } else {
-                                    // Invalid input, show error message to the user
-                                    Toast.makeText(context, "Invalid email or password format!", Toast.LENGTH_SHORT).show()
                                 }
-                            },
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    // calling on cancelled method when we receive
+                                    // any error or we are not able to get the data.
+                                    Toast.makeText(context, "Fail to get data.", Toast.LENGTH_SHORT).show()
+                                }
+                            })},
+
 
                             shape = RectangleShape,
                             modifier = Modifier
@@ -195,25 +195,30 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                                     end = 8.dp
                                 )
                                 .height(50.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor =  marketplace_light_primary),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6A8DCC)),
                         ) {
                             Text(text = "Log In")
                         }
+
                         Button(
                             onClick = { navController.navigate("signup") },
-                            modifier = Modifier.fillMaxWidth().padding(top = 13.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = marketplace_light_onPrimary),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 13.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFFF)),
                         ) {
                             Text(
                                 buildAnnotatedString {
                                     append("Don't have an account? ")
-                                    withStyle(style = SpanStyle(color = marketplace_light_primary)) {
+                                    withStyle(style = SpanStyle(color = Color(0xFF6A8DCC))) {
                                         append("Sign Up")
                                     }
                                 },
                                 color = Color.Black
                             )
+
                         }
+
                         Text(
                             text = "Or",
                             modifier = Modifier
@@ -223,6 +228,7 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                                     end = 8.dp, bottom = 10.dp
                                 )
                         )
+
                         Card(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onTertiary),
                             border = BorderStroke(0.001.dp, Color.Gray),
@@ -230,11 +236,14 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                             shape = RoundedCornerShape(10.dp)
                         ) {
                             Row(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize(),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center,
                             ) {
-                                GoogleLoginButton(navController = navController)
+
+                                GoogleLoginButton()
+
                             }
                         }
                     }
@@ -242,87 +251,45 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
             }
         }
     }
-}
 
-fun validateInput(email: String, password: String): Boolean {
-    if(email.isEmpty() ||  password.isEmpty()){
-        return false
-    }
-    // Check if the email is in a valid format
-    if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-        return false  // Invalid email format
-    }
-    // Check if the password meets minimum length requirement
-    if (password.length !in 5..12) {
-        return false  // Password is too short
-    }
-
-    return true  // Input is valid
 }
 
 @Composable
-fun GoogleLoginButton(navController: NavController) {
+fun GoogleLoginButton() {
     val context = LocalContext.current
-
-    // Remember the launcher for handling activity result
     val signInLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account = task.getResult(ApiException::class.java)
-                account?.idToken?.let { idToken ->
-                    // Call Firebase authentication with Google method
-                    firebaseAuthWithGoogle(context, idToken) { userEmail, username ->
-                        if (userEmail != null && username != null) {
-                            Toast.makeText(context, "Log In Succeed!", Toast.LENGTH_SHORT).show()
-                            // Navigate to home screen and pass user data
-                            navController.navigate("home") {
-                                navController.currentBackStackEntry?.arguments?.apply {
-                                    putString("email", userEmail)
-                                    putString("username", username)
-                                }
-                            }
-                        } else {
-                            Toast.makeText(context, "Failed to retrieve user info after Google sign-in", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                }
+                account?.idToken?.let { firebaseAuthWithGoogle(context, it) }
             } catch (e: ApiException) {
-                // Handle Google sign-in failure
-                Toast.makeText(context, "Google sign-in failed: ${e.message}", Toast.LENGTH_SHORT).show()
+                // Handle login failure
             }
         }
     }
 
-    // Create Google sign-in client
-    val googleSignInClient = rememberGoogleSignUpClient(context)
+    val googleSignInClient = rememberGoogleSignInClient(context)
 
-    // Row with Google sign-in button
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.clickable {
             val signInIntent = googleSignInClient.signInIntent
-            signInLauncher.launch(signInIntent) // Launch the sign-in intent
+            signInLauncher.launch(signInIntent)
         }
     ) {
         Image(
             painter = painterResource(id = R.drawable.googleicon),
             contentDescription = "Google Sign In",
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .size(20.dp)
+            modifier = Modifier.padding(start = 8.dp).size(20.dp)
         )
-        Text(
-            text = "Log In",
-            modifier = Modifier
-                .padding(start = 9.dp)
-        )
+
+        Text("Sign in with Google")
     }
 }
 
-// Function to retrieve Google sign-in client
 @Composable
-private fun rememberGoogleSignUpClient(context: Context): GoogleSignInClient {
+private fun rememberGoogleSignInClient(context: Context): GoogleSignInClient {
     val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(context.getString(R.string.default_web_client_id))
         .requestEmail()
@@ -330,44 +297,16 @@ private fun rememberGoogleSignUpClient(context: Context): GoogleSignInClient {
     return GoogleSignIn.getClient(context, options)
 }
 
-private fun firebaseAuthWithGoogle(context: Context, idToken: String, callback: (String?, String?) -> Unit) {
+private fun firebaseAuthWithGoogle(context: Context, idToken: String) {
     val credential = GoogleAuthProvider.getCredential(idToken, null)
     FirebaseAuth.getInstance().signInWithCredential(credential)
         .addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val user = FirebaseAuth.getInstance().currentUser
                 val email = user?.email
-                val username = user?.displayName
-
-                if (email != null && username != null) {
-                    // Check if the user exists in Firebase
-                    val emailKey = email.replace(".", ",")
-                    val databaseReference = FirebaseDatabase.getInstance().getReference("UserInfo")
-
-                    databaseReference.child(emailKey).addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val userObj = snapshot.getValue(UserObj::class.java)
-
-                            if (userObj != null && userObj.userUsername == username) {
-                                callback(email, username)
-                            } else {
-                                Toast.makeText(context, "Username mismatch or user not found in Firebase!", Toast.LENGTH_SHORT).show()
-                                callback(null, null)
-                            }
-                        }
-                        override fun onCancelled(error: DatabaseError) {
-                            // Handle database read error
-                            callback(null, null) }
-                    })
-                } else {
-                    // Handle missing email or username
-                    callback(null, null)
-                    Toast.makeText(context, "Email or username not found after Google sign-in!", Toast.LENGTH_SHORT).show()
-                }
+                Toast.makeText(context, email, Toast.LENGTH_SHORT).show()
             } else {
-                callback(null, null)
+                // Handle login failure
             }
         }
-    }
-
-
+}
