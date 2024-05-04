@@ -13,5 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "marketplace"
+rootProject.name = "Assignment01"
 include(":app")
+ 
