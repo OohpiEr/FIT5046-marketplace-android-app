@@ -6,6 +6,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -73,12 +74,16 @@ class LogIn : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         val firebaseDatabase = FirebaseDatabase.getInstance();
         val databaseReference = firebaseDatabase.getReference("UserInfo");
+        val viewModel = MessageViewModel()
+
         setContent {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "login") {
                 composable("login") { SignIn(navController, databaseReference = databaseReference) }
                 composable("signup") { SignUp(navController, databaseReference = databaseReference) }
-                composable("home"){ HomeScreen()}
+                composable("contact") { ContactScreen(viewModel,navController) }
+                composable("chat") { ChatScreen(navController) }
+                composable("home"){ HomeScreen(navController)}
             }
         }
 
@@ -97,7 +102,6 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
     var usernameDB by remember{ mutableStateOf("") }
     val context= LocalContext.current
     val emailKey = email.replace(".", ",")
-
     Surface(
         color = marketplace_light_primary, // Set the background color for the column
         modifier = Modifier.fillMaxSize()
@@ -162,15 +166,9 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
 
                                             if(emailDB.equals(email) && passwordDB.equals(password)) {
                                                 Toast.makeText(context, "Log In Succeed!", Toast.LENGTH_SHORT).show()
-                                                navController.navigate("home") {
-                                                    // Pass user data to the home screen
-                                                    navController.previousBackStackEntry?.arguments?.apply {
-                                                        putString("email", emailDB)
-                                                        putString("username", usernameDB)
-                                                        putString("gender", genderDB)
-                                                        putString("password", passwordDB)
-                                                    }
-                                                }
+                                                navController.currentBackStackEntry?.savedStateHandle?.set("email", emailDB)
+                                                navController.navigate("home")
+
                                             } else{
                                                 Toast.makeText(context,"Incorrect email or password!",Toast.LENGTH_SHORT).show()
                                             }
@@ -279,7 +277,7 @@ fun GoogleLoginButton(navController: NavController) {
                             Toast.makeText(context, "Log In Succeed!", Toast.LENGTH_SHORT).show()
                             // Navigate to home screen and pass user data
                             navController.navigate("home") {
-                                navController.previousBackStackEntry?.arguments?.apply {
+                                navController.currentBackStackEntry?.arguments?.apply {
                                     putString("email", userEmail)
                                     putString("username", username)
                                 }

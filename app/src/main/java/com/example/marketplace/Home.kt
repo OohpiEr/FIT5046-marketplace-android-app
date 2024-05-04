@@ -1,6 +1,7 @@
 package com.example.marketplace
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -13,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material.icons.Icons
@@ -47,43 +46,48 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
-
-
-import com.example.marketplace.ui.theme.MarketplaceTheme
-
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+/*
 class Home : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel = MessageViewModel()
         setContent {
-            HomeScreen()
+            val navController = rememberNavController()
+           NavHost(navController = navController, startDestination = "home") {
+                composable("chat") { ContactScreen(viewModel, navController) }
+                composable("home"){ HomeScreen(navController)}
+            }
         }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
 }
-
-
+*/
+/*
 @Composable
 @Preview
 fun PreviewHomescreen() {
     MarketplaceTheme {
-        HomeScreen()
+        HomeScreen(navController)
     }
 }
-
+*/
 /*
 * https://developer.android.com/jetpack/compose/components/app-bars
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-
+    val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -137,7 +141,12 @@ fun HomeScreen() {
                         IconButton(onClick = { /* do something */ }) {
                             Icon(Icons.Filled.Home, contentDescription = "Localized description")
                         }
-                        IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.navigate("contact")
+
+
+                        },) {
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",

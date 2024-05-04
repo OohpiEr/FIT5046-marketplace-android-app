@@ -13,13 +13,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
@@ -64,20 +60,24 @@ import androidx.navigation.NavHostController
 import com.google.firebase.firestore.FieldPath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen() {
+fun ChatScreen(navController: NavController) {
     val db = Firebase.firestore
     val messagesCollection = remember { db.collection("message") }
     val messages = remember { mutableStateListOf<Message>() }
     var listenerRegistration by remember { mutableStateOf(ListenerRegistration { }) }
+    val currentUserId: String? = navController.previousBackStackEntry?.savedStateHandle?.get("Id")
+    val senderName: String? = navController.previousBackStackEntry?.savedStateHandle?.get("sender")
+    val receiverId: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
+    val receiverName: String? = navController.previousBackStackEntry?.savedStateHandle?.get("receiver")
     val messageText = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
-    val sendName = "Stan"
-    val receiveName = "St"
-    val currentUserId = "qJoZYdNXv6otsvmL45Iq"
-    val reid = "D9qy3RijILXCcOluhVjB"
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -99,7 +99,9 @@ fun ChatScreen() {
                     modifier = Modifier.weight(1f)
                 ) {
                     items(messages) { message ->
-                        MessageBubble(message, currentUserId)
+                        if (currentUserId != null) {
+                            MessageBubble(message, currentUserId)
+                        }
                     }
                 }
                 Divider(color = Color.Gray, thickness = 1.dp)
@@ -108,7 +110,9 @@ fun ChatScreen() {
                     onMessageTextChanged = { messageText.value = it },
                     onSendMessage = {
                         if (messageText.value.isNotBlank()) {
-                            sendMessage(messagesCollection, messageText.value, currentUserId, reid,sendName,receiveName)
+                            if (currentUserId != null && receiverId != null && senderName != null && receiverName != null) {
+                                sendMessage(messagesCollection, messageText.value, currentUserId, receiverId,senderName,receiverName)
+                            }
                             messageText.value = ""
                             focusManager.clearFocus()
                         }
@@ -125,8 +129,13 @@ fun ChatScreen() {
                 return@addSnapshotListener
             }
 
-            snapshot?.let { processMessagesSnapshot(it, messages, currentUserId) }
+            snapshot?.let {
+                if (currentUserId != null) {
+                    processMessagesSnapshot(it, messages, currentUserId)
+                }
+            }
         }
+
 
     }
 
@@ -136,6 +145,44 @@ fun ChatScreen() {
         }
     }
 }
+
+
+
+suspend fun migrateDataFromRealtimeToFirestore() {
+    val realtimeDatabaseReference = FirebaseDatabase.getInstance().getReference("UserInfo")
+    val firestore = FirebaseFirestore.getInstance()
+    val usersCollection = firestore.collection("users")
+    val dataSnapshot = realtimeDatabaseReference.get().await()
+
+    dataSnapshot.children.forEach { data ->
+        val userEmail = data.child("userEmail").getValue(String::class.java) ?: ""
+        val userUsername = data.child("userUsername").getValue(String::class.java) ?: ""
+        val userPassword = data.child("userPassword").getValue(String::class.java) ?: ""
+        val userGender = data.child("userGender").getValue(String::class.java) ?: ""
+        val userId = userEmail
+
+
+        val existingDoc = usersCollection.document(userId).get().await()
+        if (existingDoc.exists()) {
+
+            println("Document with ID $userId already exists. Skipping.")
+        } else {
+
+            val userData = hashMapOf(
+                "email" to userEmail,
+                "name" to userUsername,
+                "password" to userPassword,
+                "gender" to userGender
+            )
+            usersCollection.document(userId).set(userData).await()
+            println("Document with ID $userId added.")
+        }
+    }
+
+    println("Data migration completed.")
+}
+
+
 fun processMessagesSnapshot(snapshot: QuerySnapshot, messages: MutableList<Message>, currentUserId: String) {
     messages.clear()
     val newMessages = snapshot.toObjects(Message::class.java)
@@ -166,7 +213,7 @@ fun MessageBubble(message: Message, currentUserId: String) {
                 if (!isCurrentUser) {
 
                     Icon(
-                        imageVector = Icons.Default.Person, // 使用默认的用户图标
+                        imageVector = Icons.Default.Person,
                         contentDescription = null,
                         modifier = Modifier
                             .size(40.dp)
@@ -187,7 +234,7 @@ fun MessageBubble(message: Message, currentUserId: String) {
                                 .padding(start = 10.dp)
                         ) {
                             Text(
-                                text = message.receiverName + ":        " + formattedTime,
+                                text = message.sendName + ":        " + formattedTime,
                                 modifier = Modifier.padding(8.dp),
                                 textAlign =  TextAlign.End,
                                 style = TextStyle(fontSize = 12.sp) )
@@ -298,17 +345,23 @@ fun sendMessage(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController) {
+    val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    val currentUserId = "qJoZYdNXv6otsvmL45Iq"
     val contacts = remember { mutableStateOf<List<Contact>>(emptyList()) }
+    var name by remember { mutableStateOf("") }
     LaunchedEffect(key1 = true) {
-        viewModel.fetchMessages(currentUserID =currentUserId) { fetchedContacts ->
-            contacts.value = fetchedContacts.value
-
+        migrateDataFromRealtimeToFirestore()
+        if (email != null) {
+            viewModel.fetchMessages(currentUserID = email) { fetchedContacts ->
+                contacts.value = fetchedContacts.value
+            }
+        }
+        val userDocument =
+            email?.let { FirebaseFirestore.getInstance().collection("users").document(it).get().await() }
+        if (userDocument != null) {
+            name = userDocument.getString("name") ?: ""
         }
     }
-
-
 
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
@@ -354,26 +407,38 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             .fillMaxWidth()
                     ){
                         IconButton(onClick = { /* do something */ }) {
-                            Icon(Icons.Filled.Check, contentDescription = "Localized description")
+                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
                         }
-                        IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.navigate("contact")
+
+
+                        },) {
                             Icon(
-                                Icons.Filled.Edit,
+                                Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
                             )
                         }
                         IconButton(onClick = { /* do something */ }) {
                             Icon(
-                                Icons.Filled.AccountBox,
+                                Icons.Filled.Add,
                                 contentDescription = "Localized description",
                             )
                         }
                         IconButton(onClick = { /* do something */ }) {
                             Icon(
-                                Icons.Filled.Build,
+                                Icons.Filled.Favorite,
                                 contentDescription = "Localized description",
                             )
                         }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.AccountCircle,
+                                contentDescription = "Localized description",
+                            )
+                        }
+
                     }}
             )
         },
@@ -387,7 +452,9 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                 modifier = Modifier.weight(1f)
             ) {
                 items(contacts.value) { contact ->
-                    ContactItem(contact = contact, navController = navController)
+                    if (email != null) {
+                        ContactItem(contact = contact, navController = navController, name,  email)
+                    }
                 }
             }
         }
@@ -395,13 +462,18 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
 }
 
 @Composable
-fun ContactItem(contact: Contact, navController: NavController) {
+fun ContactItem(contact: Contact, navController: NavController, name: String, id:String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                navController.navigate("chatScreen")
+                navController.currentBackStackEntry?.savedStateHandle?.set("email", contact.email)
+                navController.currentBackStackEntry?.savedStateHandle?.set("receiver", contact.name)
+                navController.currentBackStackEntry?.savedStateHandle?.set("sender", name)
+                navController.currentBackStackEntry?.savedStateHandle?.set("Id", id)
+
+                navController.navigate("chat")
             }
     ) {
         Column(
@@ -442,24 +514,32 @@ class MessageViewModel : ViewModel() {
                                 senderID?.let { receiverIDs.add(it) }
                             }
                             val uniqueIDs = (senderIDs + receiverIDs).distinct()
+                            Log.d("MessageViewModel", "Unique IDs: $uniqueIDs")
 
-                            db.collection("users").whereIn(FieldPath.documentId(), uniqueIDs).get().addOnSuccessListener { querySnapshot ->
-                                val contactsList = mutableListOf<Contact>()
-                                for (document in querySnapshot.documents) {
-                                    val name = document.getString("name") ?: ""
-                                    val email = document.getString("email") ?: ""
-                                    val id = document.id
-                                    val newContact = Contact(name, email, id)
-                                    contactsList.add(newContact)
+                            if (uniqueIDs.isNotEmpty()) {
+                                db.collection("users").whereIn(FieldPath.documentId(), uniqueIDs).get().addOnSuccessListener { querySnapshot ->
+                                    val contactsList = mutableListOf<Contact>()
+                                    for (document in querySnapshot.documents) {
+                                        val name = document.getString("name") ?: ""
+                                        val email = document.getString("email") ?: ""
+                                        val id = document.id
+                                        val newContact = Contact(name, email, id)
+                                        contactsList.add(newContact)
+                                    }
+                                    contacts.value = contactsList
+                                    onComplete(contacts)
                                 }
-                                contacts.value = contactsList
+                            } else {
+                                Log.d("MessageViewModel", "No unique IDs found, skipping Firestore query")
                                 onComplete(contacts)
                             }
                         }
                 }
                 .addOnFailureListener { exception ->
+                    Log.e("MessageViewModel", "Error fetching messages", exception)
                     // Handle failure
                 }
         }
     }
+
 }
