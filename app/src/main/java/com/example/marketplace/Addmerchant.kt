@@ -1,7 +1,11 @@
 package com.example.marketplace
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Base64
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -55,6 +59,10 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import com.google.firebase.firestore.FirebaseFirestore
+import java.io.ByteArrayOutputStream
+import java.io.FileNotFoundException
+import java.io.IOException
+
 
 class Addmerchant {
 
@@ -62,18 +70,20 @@ class Addmerchant {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddMerchant(productViewModel: ProductViewModel){
+    val context = LocalContext.current
+    var imageBase64: String? by remember { mutableStateOf(null) }
     val firestore = FirebaseFirestore.getInstance()
     val productsCollection = firestore.collection("products")
     var imageUri: Uri? by remember {
         mutableStateOf(null)
     }
-    val launcher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) {
-            it?.let { uri ->
-                imageUri = uri
-            }
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.OpenDocument()) {
+        it?.let { uri ->
+            imageUri = uri
+            val bitmap = uriToBitmap(context, uri)
+            imageBase64 = bitmap?.let { bitmapToBase64(it) }  // Update this line to set the base64 string
         }
-    val context = LocalContext.current
+    }
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
@@ -268,10 +278,10 @@ fun AddMerchant(productViewModel: ProductViewModel){
                     confirmButton = {
                         Button(onClick = {
                             productViewModel.insertProduct(
-                                Product(name = name,photo = imageUri.toString(),price = price, quantity = quantity, state = selectedState,address = address, description = description ))
+                                Product(name = name,photo = imageBase64!!,price = price, quantity = quantity, state = selectedState,address = address, description = description ))
                             val newProduct = hashMapOf(
                                 "name" to name,
-                                "photo" to imageUri.toString(),
+                                "photo" to imageBase64!!,
                                 "price" to price,
                                 "quantity" to quantity,
                                 "state" to selectedState,
@@ -295,4 +305,24 @@ fun AddMerchant(productViewModel: ProductViewModel){
         }
     }
 }
+    fun uriToBitmap(context: Context, imageUri: Uri): Bitmap? {
+        return try {
+            context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
+                BitmapFactory.decodeStream(inputStream)
+            }
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+            null
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+    fun bitmapToBase64(bitmap: Bitmap): String {
+        ByteArrayOutputStream().apply {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
+            val byteArray = this.toByteArray()
+            return Base64.encodeToString(byteArray, Base64.DEFAULT)
+        }
+    }
 }

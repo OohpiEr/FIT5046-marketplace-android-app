@@ -60,8 +60,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    map.MapScreen()
-//                    addMerchant.AddMerchant(viewModel)
+//                    map.MapScreen()
+                    addMerchant.AddMerchant(viewModel)
                 }
             }
 
