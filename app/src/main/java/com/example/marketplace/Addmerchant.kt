@@ -246,7 +246,7 @@ fun AddMerchant(productViewModel: ProductViewModel){
             Row(modifier = Modifier.padding(start = 8.dp, top = 8.dp)){
                 Box(modifier = Modifier
                     .height(65.dp)
-                    .width(195.dp)){
+                    .width(215.dp)){
 //                Button(onClick = { /*TODO*/ }) {
 //                    Text("   Cancel   ")
 //                }
@@ -254,7 +254,7 @@ fun AddMerchant(productViewModel: ProductViewModel){
                 Text("               ")
                 Box(modifier = Modifier
                     .height(65.dp)
-                    .width(195.dp)){
+                    .width(215.dp),contentAlignment = Alignment.Center){
                     Button(onClick = { showDialog = true }) {
                         Text("Confirm")
                     }

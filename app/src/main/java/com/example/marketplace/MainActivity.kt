@@ -50,6 +50,7 @@ import androidx.compose.ui.Modifier
 class MainActivity : ComponentActivity() {
     private val viewModel: ProductViewModel by viewModels()
     private val addMerchant = Addmerchant()
+    private val map = Map()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -59,7 +60,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    addMerchant.AddMerchant(viewModel)
+                    map.MapScreen()
+//                    addMerchant.AddMerchant(viewModel)
                 }
             }
 
