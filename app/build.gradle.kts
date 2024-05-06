@@ -88,6 +88,9 @@ dependencies {
 
     // navigation
     implementation ("androidx.navigation:navigation-compose:2.7.7")
+    //map
+    implementation("com.mapbox.maps:android:11.0.0")
+
 
 
 
