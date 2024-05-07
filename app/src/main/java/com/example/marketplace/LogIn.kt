@@ -2,11 +2,12 @@ package com.example.marketplace
 import BottomAppBar
 import android.app.Activity
 import android.content.Context
-import androidx.navigation.NavController
+//import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -54,11 +55,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.marketplace.ui.theme.marketplace_light_onPrimary
 import com.example.marketplace.ui.theme.marketplace_light_primary
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DataSnapshot
@@ -66,8 +73,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.FirebaseApp
-import com.example.marketplace.ui.theme.*
 
 class LogIn : ComponentActivity() {
     private val favProductViewModel: FavProductViewModel by viewModels()
@@ -77,15 +82,20 @@ class LogIn : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         val firebaseDatabase = FirebaseDatabase.getInstance();
         val databaseReference = firebaseDatabase.getReference("UserInfo");
-        val viewModel = MessageViewModel()
+        val MessageViewModel = MessageViewModel()
+        val ProductViewModel: ProductViewModel by viewModels()
 
         setContent {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "login") {
                 composable("login") { SignIn(navController, databaseReference = databaseReference) }
                 composable("signup") { SignUp(navController, databaseReference = databaseReference) }
-                composable("contact") { ContactScreen(viewModel,navController) }
+                composable("contact") { ContactScreen(MessageViewModel,navController) }
                 composable("chat") { ChatScreen(navController) }
+//                composable("home"){ HomeScreen(navController)}
+                composable("Addmerchant") { Addmerchant().AddProduct(ProductViewModel,navController) }
+                composable("Map") { Map().MapScreen(navController) }
+
                 composable("home"){ BottomAppBar(navController, favProductViewModel)}
             }
         }
@@ -105,6 +115,9 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
     var usernameDB by remember{ mutableStateOf("") }
     val context= LocalContext.current
     val emailKey = email.replace(".", ",")
+    val sharedPreferences = LocalContext.current.getSharedPreferences("myPreferences", Context.MODE_PRIVATE)
+    val savedEmail = remember { mutableStateOf(sharedPreferences.getString("email", "")) }
+
     Surface(
         color = marketplace_light_primary, // Set the background color for the column
         modifier = Modifier.fillMaxSize()
@@ -144,7 +157,8 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                             onValueChange = { email = it },
                             label = { Text("Email") },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth().padding(8.dp)
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                            placeholder = { savedEmail.value?.let { Text(it) } }
                         )
                         OutlinedTextField(
                             value = password,
@@ -159,6 +173,7 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                             onClick = {
                                 // Example usage of validateInput in login logic
                                 if (validateInput(email, password)) {
+                                    sharedPreferences.edit().putString("email", email).apply()
                                     databaseReference.child(emailKey).get().addOnSuccessListener { snapshot ->
                                         val userObj = snapshot.getValue(UserObj::class.java)
                                         userObj?.let {
