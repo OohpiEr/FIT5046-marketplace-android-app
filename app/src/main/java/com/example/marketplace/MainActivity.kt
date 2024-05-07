@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 //                    map.MapScreen()
-                    addMerchant.AddMerchant(viewModel)
+                    addMerchant. AppNavigation(viewModel)
                 }
             }
 

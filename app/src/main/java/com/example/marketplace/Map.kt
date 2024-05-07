@@ -129,7 +129,7 @@ fun MapScreen(navController: NavController) {
 
 
                     Button(
-                        onClick = {  navController.navigate("Addmerchant")},Map
+                        onClick = {  navController.navigate("Addmerchant")},
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .padding(16.dp)
