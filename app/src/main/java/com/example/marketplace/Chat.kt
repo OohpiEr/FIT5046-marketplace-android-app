@@ -133,6 +133,7 @@ fun ChatScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
+                    .padding(bottom = 50.dp)
             ) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)

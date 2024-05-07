@@ -139,7 +139,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
         Column(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(start = 4.dp) ) {
+            .padding(start = 4.dp, bottom = 100.dp) ) {
 
             Row(modifier = Modifier
                 .padding(start = 8.dp, top = 30.dp)) {

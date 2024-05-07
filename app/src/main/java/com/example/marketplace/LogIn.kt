@@ -7,7 +7,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -56,9 +55,6 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.marketplace.ui.theme.marketplace_light_onPrimary
 import com.example.marketplace.ui.theme.marketplace_light_primary
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -83,7 +79,7 @@ class LogIn : ComponentActivity() {
         val firebaseDatabase = FirebaseDatabase.getInstance();
         val databaseReference = firebaseDatabase.getReference("UserInfo");
         val MessageViewModel = MessageViewModel()
-        val ProductViewModel: ProductViewModel by viewModels()
+        val productViewModel: ProductViewModel by viewModels()
 
         setContent {
             val navController = rememberNavController()
@@ -92,11 +88,10 @@ class LogIn : ComponentActivity() {
                 composable("signup") { SignUp(navController, databaseReference = databaseReference) }
                 composable("contact") { ContactScreen(MessageViewModel,navController) }
                 composable("chat") { ChatScreen(navController) }
-//                composable("home"){ HomeScreen(navController)}
-                composable("Addmerchant") { Addmerchant().AddProduct(ProductViewModel,navController) }
+                composable("Addmerchant") { Addmerchant().AddProduct(productViewModel,navController) }
                 composable("Map") { Map().MapScreen(navController) }
 
-                composable("home"){ BottomAppBar(navController, favProductViewModel)}
+                composable("home"){ BottomAppBar(navController, favProductViewModel, productViewModel)}
             }
         }
 
