@@ -1,4 +1,5 @@
 package com.example.marketplace
+import MainAppScaffold
 import android.app.Activity
 import android.content.Context
 import androidx.navigation.NavController
@@ -6,7 +7,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -83,7 +83,7 @@ class LogIn : ComponentActivity() {
                 composable("signup") { SignUp(navController, databaseReference = databaseReference) }
                 composable("contact") { ContactScreen(viewModel,navController) }
                 composable("chat") { ChatScreen(navController) }
-                composable("home"){ HomeScreen(navController)}
+                composable("home"){ MainAppScaffold(navController)}
             }
         }
 

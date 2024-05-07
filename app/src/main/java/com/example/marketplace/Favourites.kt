@@ -50,135 +50,137 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.marketplace.ui.theme.MarketplaceTheme
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-class Favourites : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            FavScreen()
-        }
+//class Favourites : ComponentActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContent {
+//            FavScreen()
+//        }
+//
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
+//    }
+//
+//}
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-    }
 
-}
-
-
-@Composable
-@Preview
-fun PreviewFavouritesScreen() {
-    val title = "Favourites"
-
-    MarketplaceTheme {
-        FavScreen()
-    }
-}
+//@Composable
+//@Preview
+//fun PreviewFavouritesScreen() {
+//    val title = "Favourites"
+//
+//    MarketplaceTheme {
+//        FavScreen()
+//    }
+//}
 
 /*
 * https://developer.android.com/jetpack/compose/components/app-bars
 */
-@OptIn(ExperimentalMaterial3Api::class)
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun FavScreen(navController: NavHostController) {
+//    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+//    val title = "Favourites"
+//    val db = Firebase.firestore
+//    val productsCollection = remember { db.collection("products") }
+//
+//    val allProducts = mutableListOf<Product>()
+//
+//    Scaffold(
+//        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+//        topBar = {
+//            MediumTopAppBar(
+//                colors = TopAppBarDefaults.topAppBarColors(
+//                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+//                    titleContentColor = MaterialTheme.colorScheme.primary,
+//                ),
+//                title = {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically
+//                    ) {
+//
+//                        Text(
+//                            title,
+//                            maxLines = 1,
+//                            overflow = TextOverflow.Ellipsis
+//                        )
+//                    }
+//                },
+//                navigationIcon = {
+//                    Icon(
+//                        imageVector = Icons.Filled.ArrowBack,
+//                        contentDescription = "Localized description",
+//                        tint = MaterialTheme.colorScheme.primary,
+//                        modifier = Modifier.padding(8.dp)
+//                    )
+//                },
+//
+//                actions = {
+//                    // hamburger icon
+//                    IconButton(onClick = { /* do something */ }) {
+//                        Icon(
+//                            imageVector = Icons.Filled.Menu,
+//                            contentDescription = "Localized description"
+//                        )
+//                    }
+//                },
+//                scrollBehavior = scrollBehavior
+//            )
+//        },
+//        bottomBar = {
+//            BottomAppBar(
+//                modifier = Modifier.fillMaxWidth().height(80.dp),
+//                actions = {
+//                    Row(
+//                        horizontalArrangement = Arrangement.SpaceAround,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                    ){
+//                        IconButton(onClick = { /* do something */ }) {
+//                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+//                        }
+//                        IconButton(onClick = { /* do something */ }) {
+//                            Icon(
+//                                Icons.Filled.MailOutline,
+//                                contentDescription = "Localized description",
+//                            )
+//                        }
+//                        IconButton(onClick = { /* do something */ }) {
+//                            Icon(
+//                                Icons.Filled.Add,
+//                                contentDescription = "Localized description",
+//                            )
+//                        }
+//                        IconButton(onClick = { /* do something */ }) {
+//                            Icon(
+//                                Icons.Filled.Favorite,
+//                                contentDescription = "Localized description",
+//                            )
+//                        }
+//                        IconButton(onClick = { /* do something */ }) {
+//                            Icon(
+//                                Icons.Filled.AccountCircle,
+//                                contentDescription = "Localized description",
+//                            )
+//                        }
+//
+//                    }}
+//            )
+//        },
+//    )  { innerPadding ->
+//        HomeScrollContent(innerPadding)
+//    }
+//
+//}
+
 @Composable
-fun FavScreen() {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val title = "Favourites"
-    val db = Firebase.firestore
-    val productsCollection = remember { db.collection("products") }
-
-    val allProducts = mutableListOf<Product>()
-
-    Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            MediumTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Text(
-                            title,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                },
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Localized description",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(8.dp)
-                    )
-                },
-
-                actions = {
-                    // hamburger icon
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Localized description"
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
-            )
-        },
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.fillMaxWidth().height(80.dp),
-                actions = {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ){
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
-                        }
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                Icons.Filled.MailOutline,
-                                contentDescription = "Localized description",
-                            )
-                        }
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = "Localized description",
-                            )
-                        }
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                Icons.Filled.Favorite,
-                                contentDescription = "Localized description",
-                            )
-                        }
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                Icons.Filled.AccountCircle,
-                                contentDescription = "Localized description",
-                            )
-                        }
-
-                    }}
-            )
-        },
-    )  { innerPadding ->
-        HomeScrollContent(innerPadding)
-    }
-
-}
-
-@Composable
-fun FavScrollContent(innerPadding: PaddingValues) {
+fun FavScrollContent(navController: NavController) {
     // TODO: remove this
     val tempItems = 10
 
@@ -193,9 +195,9 @@ fun FavScrollContent(innerPadding: PaddingValues) {
             }
 
         },
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(innerPadding)
     )
 }
 
