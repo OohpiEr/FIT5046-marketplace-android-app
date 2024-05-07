@@ -267,9 +267,8 @@ fun MessageBubble(message: Message, currentUserId: String) {
                                 containerColor = Color.LightGray
                             ),
                             modifier = Modifier
-                                .padding(8.dp)
+                                .padding(top =  8.dp, bottom = 8.dp)
                                 .padding(horizontal = 4.dp)
-                                .padding(start = 5.dp)
                         ) {
                             Text(
                                 text = message.sendName + ":        " + formattedTime,
@@ -293,9 +292,8 @@ fun MessageBubble(message: Message, currentUserId: String) {
                                 containerColor = Color(0xFFFAF3E8)
                             ),
                             modifier = Modifier
-                                .padding(8.dp)
+                                .padding(top =  8.dp, bottom = 8.dp)
                                 .padding(horizontal = 8.dp)
-                                .padding(start = 5.dp),
                         ) {
                             Text(
                                 text = "You" + ":       at " + formattedTime,
