@@ -41,6 +41,7 @@ import com.google.firebase.ktx.Firebase
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.mutableStateListOf
 
 /*
@@ -73,116 +74,52 @@ fun PreviewHomescreen() {
 /*
 * https://developer.android.com/jetpack/compose/components/app-bars
 */
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun HomeScreen(navController: NavController) {
-//    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-//    val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
-//
-//    Scaffold(
-//        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-//        topBar = {
-//            MediumTopAppBar(
-//                colors = TopAppBarDefaults.topAppBarColors(
-//                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-//                    titleContentColor = MaterialTheme.colorScheme.primary,
-//                ),
-//                title = {
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically
-//                    ) {
-//
-//                        Text(
-//                            "Marketplace",
-//                            maxLines = 1,
-//                            overflow = TextOverflow.Ellipsis
-//                        )
-//                    }
-//                },
-//                navigationIcon = {
-//                    Icon(
-//                        imageVector = Icons.Rounded.ShoppingCart,
-//                        contentDescription = "Localized description",
-//                        tint = MaterialTheme.colorScheme.primary,
-//                        modifier = Modifier.padding(8.dp)
-//                    )
-//                },
-//
-//                actions = {
-//                    // hamburger icon
-//                    IconButton(onClick = { /* do something */ }) {
-//                        Icon(
-//                            imageVector = Icons.Filled.Menu,
-//                            contentDescription = "Localized description"
-//                        )
-//                    }
-//                },
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen(navController: NavController) {
+    val title = "Home"
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Text(
+                            title,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
+                navigationIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.ShoppingCart,
+                        contentDescription = "Localized description",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                },
 //                scrollBehavior = scrollBehavior
-//            )
-//        },
-//        bottomBar = {
-//            BottomAppBar(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(80.dp),
-//                actions = {
-//                    Row(
-//                        horizontalArrangement = Arrangement.SpaceAround,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                    ) {
-//                        IconButton(onClick = { /* do something */ }) {
-//                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
-//                        }
-//                        IconButton(
-//                            onClick = {
-//                                navController.currentBackStackEntry?.savedStateHandle?.set(
-//                                    "email",
-//                                    email
-//                                )
-//                                navController.navigate("contact")
-//
-//
-//                            },
-//                        ) {
-//                            Icon(
-//                                Icons.Filled.MailOutline,
-//                                contentDescription = "Localized description",
-//                            )
-//                        }
-//                        IconButton(onClick = { /* do something */ }) {
-//                            Icon(
-//                                Icons.Filled.Add,
-//                                contentDescription = "Localized description",
-//                            )
-//                        }
-//                        IconButton(onClick = { /* do something */ }) {
-//                            Icon(
-//                                Icons.Filled.Favorite,
-//                                contentDescription = "Localized description",
-//                            )
-//                        }
-//                        IconButton(onClick = { /* do something */ }) {
-//                            Icon(
-//                                Icons.Filled.AccountCircle,
-//                                contentDescription = "Localized description",
-//                            )
-//                        }
-//
-//                    }
-//                }
-//            )
-//        },
-//    ) { innerPadding ->
-////        HomeScrollContent(innerPadding)
-//    }
-//}
+            )
+        },
+
+        ) { innerPadding ->
+        HomeScrollContent(innerPadding)
+    }
+}
 
 @Composable
-fun HomeScrollContent(navController: NavController) {
+fun HomeScrollContent(innerPadding: PaddingValues) {
     val db = Firebase.firestore
 
-    val allProducts = remember { mutableStateListOf<Product>()}
+    val allProducts = remember { mutableStateListOf<Product>() }
 
     db.collection("products")
         .get()
@@ -207,6 +144,10 @@ fun HomeScrollContent(navController: NavController) {
                 ProductCard(product)
             }
         },
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
     )
+
 }
 

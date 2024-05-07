@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
@@ -74,7 +75,8 @@ fun ChatScreen(navController: NavController) {
     val currentUserId: String? = navController.previousBackStackEntry?.savedStateHandle?.get("Id")
     val senderName: String? = navController.previousBackStackEntry?.savedStateHandle?.get("sender")
     val receiverId: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
-    val receiverName: String? = navController.previousBackStackEntry?.savedStateHandle?.get("receiver")
+    val receiverName: String? =
+        navController.previousBackStackEntry?.savedStateHandle?.get("receiver")
     val messageText = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
 
@@ -86,14 +88,22 @@ fun ChatScreen(navController: NavController) {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = { Text("Chat") },
-
-            )
+                navigationIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.MailOutline,
+                        contentDescription = "Localized description",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                },
+                )
         },
         content = { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
+                    .padding(bottom = 50.dp)
             ) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
@@ -111,7 +121,14 @@ fun ChatScreen(navController: NavController) {
                     onSendMessage = {
                         if (messageText.value.isNotBlank()) {
                             if (currentUserId != null && receiverId != null && senderName != null && receiverName != null) {
-                                sendMessage(messagesCollection, messageText.value, currentUserId, receiverId,senderName,receiverName)
+                                sendMessage(
+                                    messagesCollection,
+                                    messageText.value,
+                                    currentUserId,
+                                    receiverId,
+                                    senderName,
+                                    receiverName
+                                )
                             }
                             messageText.value = ""
                             focusManager.clearFocus()
@@ -120,6 +137,7 @@ fun ChatScreen(navController: NavController) {
                 )
             }
         }
+
     )
 
     LaunchedEffect(Unit) {
@@ -145,7 +163,6 @@ fun ChatScreen(navController: NavController) {
         }
     }
 }
-
 
 
 suspend fun migrateDataFromRealtimeToFirestore() {
@@ -183,7 +200,11 @@ suspend fun migrateDataFromRealtimeToFirestore() {
 }
 
 
-fun processMessagesSnapshot(snapshot: QuerySnapshot, messages: MutableList<Message>, currentUserId: String) {
+fun processMessagesSnapshot(
+    snapshot: QuerySnapshot,
+    messages: MutableList<Message>,
+    currentUserId: String
+) {
     messages.clear()
     val newMessages = snapshot.toObjects(Message::class.java)
 
@@ -195,11 +216,13 @@ fun processMessagesSnapshot(snapshot: QuerySnapshot, messages: MutableList<Messa
 
     messages.addAll(sortedMessages)
 }
+
 @Composable
 fun MessageBubble(message: Message, currentUserId: String) {
     val isCurrentUser = message.senderId == currentUserId
-    val instant = Instant.ofEpochMilli(message.timestamp )
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault())
+    val instant = Instant.ofEpochMilli(message.timestamp)
+    val formatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault())
     val formattedTime = formatter.format(instant)
 
     Box(
@@ -222,7 +245,7 @@ fun MessageBubble(message: Message, currentUserId: String) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Column(
                         horizontalAlignment = Alignment.Start
-                    ){
+                    ) {
 
                         Card(
                             colors = CardDefaults.cardColors(
@@ -236,12 +259,13 @@ fun MessageBubble(message: Message, currentUserId: String) {
                             Text(
                                 text = message.sendName + ":        " + formattedTime,
                                 modifier = Modifier.padding(8.dp),
-                                textAlign =  TextAlign.End,
-                                style = TextStyle(fontSize = 12.sp) )
+                                textAlign = TextAlign.End,
+                                style = TextStyle(fontSize = 12.sp)
+                            )
                             Text(
                                 text = message.text,
                                 modifier = Modifier.padding(8.dp),
-                                textAlign =  TextAlign.End
+                                textAlign = TextAlign.End
                             )
                         }
                     }
@@ -250,7 +274,7 @@ fun MessageBubble(message: Message, currentUserId: String) {
                     // 如果是当前用户，则显示当前用户的默认头像和名字
                     Column(
                         horizontalAlignment = Alignment.End
-                    ){
+                    ) {
 
                         Card(
                             colors = CardDefaults.cardColors(
@@ -264,12 +288,13 @@ fun MessageBubble(message: Message, currentUserId: String) {
                             Text(
                                 text = message.sendName + ":       from " + formattedTime,
                                 modifier = Modifier.padding(8.dp),
-                                textAlign =  TextAlign.End,
-                                style = TextStyle(fontSize = 12.sp) )
+                                textAlign = TextAlign.End,
+                                style = TextStyle(fontSize = 12.sp)
+                            )
                             Text(
                                 text = message.text,
                                 modifier = Modifier.padding(8.dp),
-                                textAlign =  TextAlign.End
+                                textAlign = TextAlign.End
                             )
                         }
                     }
@@ -326,10 +351,11 @@ data class Message(
     val text: String = "",
     val senderId: String = "",
     val receiverId: String = "",
-    var sendName:String = "",
-    var receiverName:String = "",
+    var sendName: String = "",
+    var receiverName: String = "",
     val timestamp: Long = System.currentTimeMillis()
 )
+
 fun sendMessage(
     messagesCollection: CollectionReference,
     messageText: String,
@@ -338,7 +364,7 @@ fun sendMessage(
     sendName: String,
     receiveName: String
 ) {
-    val message = Message(messageText, senderId, receiverId,sendName,receiveName)
+    val message = Message(messageText, senderId, receiverId, sendName, receiveName)
     messagesCollection.add(message)
 }
 
@@ -357,44 +383,47 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
             }
         }
         val userDocument =
-            email?.let { FirebaseFirestore.getInstance().collection("users").document(it).get().await() }
+            email?.let {
+                FirebaseFirestore.getInstance().collection("users").document(it).get().await()
+            }
         if (userDocument != null) {
             name = userDocument.getString("name") ?: ""
         }
     }
 
-    Scaffold( topBar = {
-        CenterAlignedTopAppBar(
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary,
-            ),
-            title = {
-                Text(
-                    "Contacts",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = { /* do something */ }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Localized description"
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(
+                        "Contacts",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
-                }
-            },
-            actions = {
-                IconButton(onClick = { /* do something */ }) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = "Localized description"
-                    )
-                }
-            },
-            scrollBehavior = scrollBehavior,
-        )
-    },
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /* do something */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { /* do something */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+            )
+        },
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier
@@ -405,16 +434,21 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                         horizontalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier
                             .fillMaxWidth()
-                    ){
+                    ) {
                         IconButton(onClick = { /* do something */ }) {
                             Icon(Icons.Filled.Home, contentDescription = "Localized description")
                         }
-                        IconButton(onClick = {
-                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
-                            navController.navigate("contact")
+                        IconButton(
+                            onClick = {
+                                navController.currentBackStackEntry?.savedStateHandle?.set(
+                                    "email",
+                                    email
+                                )
+                                navController.navigate("contact")
 
 
-                        },) {
+                            },
+                        ) {
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
@@ -439,10 +473,11 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             )
                         }
 
-                    }}
+                    }
+                }
             )
         },
-    )  { innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -453,7 +488,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
             ) {
                 items(contacts.value) { contact ->
                     if (email != null) {
-                        ContactItem(contact = contact, navController = navController, name,  email)
+                        ContactItem(contact = contact, navController = navController, name, email)
                     }
                 }
             }
@@ -462,7 +497,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
 }
 
 @Composable
-fun ContactItem(contact: Contact, navController: NavController, name: String, id:String) {
+fun ContactItem(contact: Contact, navController: NavController, name: String, id: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -480,14 +515,14 @@ fun ContactItem(contact: Contact, navController: NavController, name: String, id
             modifier = Modifier.padding(8.dp)
         ) {
             Text(
-                text = contact.name +"   " + contact.email,
+                text = contact.name + "   " + contact.email,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
     }
 }
 
-data class Contact(val name: String, val email: String,val id:String)
+data class Contact(val name: String, val email: String, val id: String)
 
 class MessageViewModel : ViewModel() {
     private val db = Firebase.firestore
@@ -517,7 +552,8 @@ class MessageViewModel : ViewModel() {
                             Log.d("MessageViewModel", "Unique IDs: $uniqueIDs")
 
                             if (uniqueIDs.isNotEmpty()) {
-                                db.collection("users").whereIn(FieldPath.documentId(), uniqueIDs).get().addOnSuccessListener { querySnapshot ->
+                                db.collection("users").whereIn(FieldPath.documentId(), uniqueIDs)
+                                    .get().addOnSuccessListener { querySnapshot ->
                                     val contactsList = mutableListOf<Contact>()
                                     for (document in querySnapshot.documents) {
                                         val name = document.getString("name") ?: ""
@@ -530,7 +566,10 @@ class MessageViewModel : ViewModel() {
                                     onComplete(contacts)
                                 }
                             } else {
-                                Log.d("MessageViewModel", "No unique IDs found, skipping Firestore query")
+                                Log.d(
+                                    "MessageViewModel",
+                                    "No unique IDs found, skipping Firestore query"
+                                )
                                 onComplete(contacts)
                             }
                         }

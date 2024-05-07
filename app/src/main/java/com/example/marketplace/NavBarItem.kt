@@ -27,7 +27,7 @@ data class NavBarItem(
                 route = Routes.Chat.value
             ),
             NavBarItem(
-                label = "Add Product",
+                label = "Add",
                 icon = Icons.Filled.Add,
                 route = Routes.AddProduct.value
             ),

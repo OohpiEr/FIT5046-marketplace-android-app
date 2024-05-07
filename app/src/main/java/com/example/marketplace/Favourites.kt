@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -34,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 //import androidx.compose.material3.MaterialTheme
@@ -82,105 +84,93 @@ import com.google.firebase.ktx.Firebase
 /*
 * https://developer.android.com/jetpack/compose/components/app-bars
 */
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun FavScreen(navController: NavHostController) {
-//    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-//    val title = "Favourites"
-//    val db = Firebase.firestore
-//    val productsCollection = remember { db.collection("products") }
-//
-//    val allProducts = mutableListOf<Product>()
-//
-//    Scaffold(
-//        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-//        topBar = {
-//            MediumTopAppBar(
-//                colors = TopAppBarDefaults.topAppBarColors(
-//                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-//                    titleContentColor = MaterialTheme.colorScheme.primary,
-//                ),
-//                title = {
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically
-//                    ) {
-//
-//                        Text(
-//                            title,
-//                            maxLines = 1,
-//                            overflow = TextOverflow.Ellipsis
-//                        )
-//                    }
-//                },
-//                navigationIcon = {
-//                    Icon(
-//                        imageVector = Icons.Filled.ArrowBack,
-//                        contentDescription = "Localized description",
-//                        tint = MaterialTheme.colorScheme.primary,
-//                        modifier = Modifier.padding(8.dp)
-//                    )
-//                },
-//
-//                actions = {
-//                    // hamburger icon
-//                    IconButton(onClick = { /* do something */ }) {
-//                        Icon(
-//                            imageVector = Icons.Filled.Menu,
-//                            contentDescription = "Localized description"
-//                        )
-//                    }
-//                },
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FavScreen(navController: NavHostController) {
+    val title = "Favourites"
+    val db = Firebase.firestore
+    val productsCollection = remember { db.collection("products") }
+
+    val allProducts = mutableListOf<Product>()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Text(
+                            title,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                },
+                navigationIcon = {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "Localized description",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                },
 //                scrollBehavior = scrollBehavior
-//            )
-//        },
-//        bottomBar = {
-//            BottomAppBar(
-//                modifier = Modifier.fillMaxWidth().height(80.dp),
-//                actions = {
-//                    Row(
-//                        horizontalArrangement = Arrangement.SpaceAround,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                    ){
-//                        IconButton(onClick = { /* do something */ }) {
-//                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
-//                        }
-//                        IconButton(onClick = { /* do something */ }) {
-//                            Icon(
-//                                Icons.Filled.MailOutline,
-//                                contentDescription = "Localized description",
-//                            )
-//                        }
-//                        IconButton(onClick = { /* do something */ }) {
-//                            Icon(
-//                                Icons.Filled.Add,
-//                                contentDescription = "Localized description",
-//                            )
-//                        }
-//                        IconButton(onClick = { /* do something */ }) {
-//                            Icon(
-//                                Icons.Filled.Favorite,
-//                                contentDescription = "Localized description",
-//                            )
-//                        }
-//                        IconButton(onClick = { /* do something */ }) {
-//                            Icon(
-//                                Icons.Filled.AccountCircle,
-//                                contentDescription = "Localized description",
-//                            )
-//                        }
-//
-//                    }}
-//            )
-//        },
-//    )  { innerPadding ->
-//        HomeScrollContent(innerPadding)
-//    }
-//
-//}
+            )
+        },
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier.fillMaxWidth().height(80.dp),
+                actions = {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ){
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+                        }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.MailOutline,
+                                contentDescription = "Localized description",
+                            )
+                        }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.Add,
+                                contentDescription = "Localized description",
+                            )
+                        }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.Favorite,
+                                contentDescription = "Localized description",
+                            )
+                        }
+                        IconButton(onClick = { /* do something */ }) {
+                            Icon(
+                                Icons.Filled.AccountCircle,
+                                contentDescription = "Localized description",
+                            )
+                        }
+
+                    }}
+            )
+        },
+    )  { innerPadding ->
+        HomeScrollContent(innerPadding)
+    }
+
+}
 
 @Composable
-fun FavScrollContent(navController: NavController) {
+fun FavScrollContent(innerPadding: PaddingValues) {
     // TODO: remove this
     val tempItems = 10
 
@@ -195,9 +185,9 @@ fun FavScrollContent(navController: NavController) {
             }
 
         },
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(innerPadding)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
     )
 }
 

@@ -1,5 +1,5 @@
 package com.example.marketplace
-import MainAppScaffold
+import BottomAppBar
 import android.app.Activity
 import android.content.Context
 import androidx.navigation.NavController
@@ -83,7 +83,7 @@ class LogIn : ComponentActivity() {
                 composable("signup") { SignUp(navController, databaseReference = databaseReference) }
                 composable("contact") { ContactScreen(viewModel,navController) }
                 composable("chat") { ChatScreen(navController) }
-                composable("home"){ MainAppScaffold(navController)}
+                composable("home"){ BottomAppBar(navController)}
             }
         }
 
