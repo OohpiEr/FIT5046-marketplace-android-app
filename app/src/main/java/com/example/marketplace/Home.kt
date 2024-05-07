@@ -146,7 +146,9 @@ fun HomeScreen(navController: NavController) {
                                 contentDescription = "Localized description",
                             )
                         }
-                        IconButton(onClick = { /* do something */ }) {
+
+
+                        IconButton(onClick = {   navController.navigate("Addmerchant") }) {
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "Localized description",

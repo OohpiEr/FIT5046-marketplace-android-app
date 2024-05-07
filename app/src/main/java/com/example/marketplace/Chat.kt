@@ -464,7 +464,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                                 contentDescription = "Localized description",
                             )
                         }
-                        IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = {  navController.navigate("Addmerchant") }) {
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "Localized description",

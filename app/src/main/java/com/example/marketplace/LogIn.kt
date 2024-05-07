@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -73,16 +74,20 @@ class LogIn : ComponentActivity() {
         FirebaseApp.initializeApp(this)
         val firebaseDatabase = FirebaseDatabase.getInstance();
         val databaseReference = firebaseDatabase.getReference("UserInfo");
-        val viewModel = MessageViewModel()
+        val MessageViewModel = MessageViewModel()
+        val ProductViewModel: ProductViewModel by viewModels()
 
         setContent {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "login") {
                 composable("login") { SignIn(navController, databaseReference = databaseReference) }
                 composable("signup") { SignUp(navController, databaseReference = databaseReference) }
-                composable("contact") { ContactScreen(viewModel,navController) }
+                composable("contact") { ContactScreen(MessageViewModel,navController) }
                 composable("chat") { ChatScreen(navController) }
                 composable("home"){ HomeScreen(navController)}
+                composable("Addmerchant") { Addmerchant().AddProduct(ProductViewModel,navController) }
+                composable("Map") { Map().MapScreen(navController) }
+
             }
         }
 
