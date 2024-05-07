@@ -1,5 +1,8 @@
 package com.example.marketplace
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,14 +22,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 
 @Composable
-fun ProductCard(product: Product, insertDialog: MutableState<Boolean>, selectedProduct: MutableState<Product?>) {
+fun ProductCard(
+    product: Product,
+    insertDialog: MutableState<Boolean>,
+    selectedProduct: MutableState<Product?>
+) {
+    var decodedImage: ImageBitmap
+    try {
+        val imageBytes = Base64.decode(product.photo, Base64.DEFAULT)
+        decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size).asImageBitmap()
+    } catch (e: Exception) {
+        decodedImage = ImageBitmap.imageResource(R.drawable.milk)
+    }
+
     ElevatedCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -34,10 +53,14 @@ fun ProductCard(product: Product, insertDialog: MutableState<Boolean>, selectedP
     ) {
         Column {
             Row() {
+//                Image(
+//                    painter = painterResource(id = R.drawable.milk),
+////                    painter = painterResource(id = R.drawable.appicon),
+//                    contentDescription = product.description
+//                )
                 Image(
-                    painter = painterResource(id = R.drawable.milk),
-//                    painter = painterResource(id = R.drawable.appicon),
-                    contentDescription = null
+                    bitmap = decodedImage,
+                    contentDescription = product.description,
                 )
             }
             Row(
@@ -45,12 +68,10 @@ fun ProductCard(product: Product, insertDialog: MutableState<Boolean>, selectedP
                     .height(56.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
-            )
-            {
+            ) {
                 Text(
                     text = product.name,
-                    modifier = Modifier
-                        .padding(16.dp),
+                    modifier = Modifier.padding(16.dp),
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.weight(1f))
@@ -64,8 +85,7 @@ fun ProductCard(product: Product, insertDialog: MutableState<Boolean>, selectedP
                     )
                 }
             }
-            Row()
-            {
+            Row() {
                 Text(
                     text = product.price,
                     modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),

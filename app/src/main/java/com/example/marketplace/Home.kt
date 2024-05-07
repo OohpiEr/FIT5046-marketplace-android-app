@@ -68,9 +68,6 @@ fun PreviewHomescreen() {
 fun HomeScreen(navController: NavController, favProductViewModel: FavProductViewModel) {
     val title = "Home"
 
-//    val favProducts by FavProductViewModel.allProducts.observeAsState(emptyList())
-
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -160,7 +157,7 @@ fun HomeScrollContent(innerPadding: PaddingValues, favProductViewModel: FavProdu
         .get()
         .addOnSuccessListener { result ->
             for (document in result) {
-                Log.d(TAG, "${document.id} => ${document.data}")
+//                Log.d(TAG, "${document.id} => ${document.data}")
                 val p = document.toObject(Product::class.java)
                 allProducts.add(p)
             }
