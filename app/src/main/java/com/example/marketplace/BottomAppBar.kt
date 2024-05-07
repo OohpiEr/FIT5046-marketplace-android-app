@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.marketplace.ChatScreen
+import com.example.marketplace.FavProductViewModel
 import com.example.marketplace.FavScreen
 import com.example.marketplace.FavScrollContent
 import com.example.marketplace.HomeScreen
@@ -35,7 +36,7 @@ import com.example.marketplace.NavBarItem
 import com.example.marketplace.Routes
 
 @Composable
-fun BottomAppBar(navigationController: NavController) {
+fun BottomAppBar(navigationController: NavController, favProductViewModel: FavProductViewModel) {
     val navController = rememberNavController()
 //    var currentRoute = navController.currentBackStackEntry?.destination?.route
 //    if (currentRoute == null) {
@@ -88,7 +89,7 @@ fun BottomAppBar(navigationController: NavController) {
 //                Modifier.padding(paddingValues)
             ) {
                 composable(Routes.Home.value) {
-                    HomeScreen(navController)
+                    HomeScreen(navController, favProductViewModel)
                 }
                 composable(Routes.Chat.value) {
                     ChatScreen(navController)
@@ -98,7 +99,7 @@ fun BottomAppBar(navigationController: NavController) {
                     ChatScreen(navController)
                 }
                 composable(Routes.Favourites.value) {
-                    FavScreen(navController)
+                    FavScreen(navController, favProductViewModel)
                 }
             }
 

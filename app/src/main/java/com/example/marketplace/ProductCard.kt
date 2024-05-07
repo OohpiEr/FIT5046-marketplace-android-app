@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -25,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ProductCard(product: Product) {
+fun ProductCard(product: Product, insertDialog: MutableState<Boolean>, selectedProduct: MutableState<Product?>) {
     ElevatedCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
@@ -53,7 +54,10 @@ fun ProductCard(product: Product) {
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.weight(1f))
-                IconButton(onClick = { /* do something */ }) {
+                IconButton(onClick = {
+                    insertDialog.value = true
+                    selectedProduct.value = product
+                }) {
                     Icon(
                         imageVector = Icons.Filled.FavoriteBorder,
                         contentDescription = "Localized description"

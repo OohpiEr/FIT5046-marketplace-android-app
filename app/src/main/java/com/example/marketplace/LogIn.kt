@@ -13,6 +13,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -69,6 +70,8 @@ import com.google.firebase.FirebaseApp
 import com.example.marketplace.ui.theme.*
 
 class LogIn : ComponentActivity() {
+    private val favProductViewModel: FavProductViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
@@ -83,7 +86,7 @@ class LogIn : ComponentActivity() {
                 composable("signup") { SignUp(navController, databaseReference = databaseReference) }
                 composable("contact") { ContactScreen(viewModel,navController) }
                 composable("chat") { ChatScreen(navController) }
-                composable("home"){ BottomAppBar(navController)}
+                composable("home"){ BottomAppBar(navController, favProductViewModel)}
             }
         }
 

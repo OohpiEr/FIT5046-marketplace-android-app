@@ -6,18 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [Product::class], version = 1, exportSchema = false)
-abstract class FavouriteProductDatabase : RoomDatabase() {
-    abstract fun productDAO(): ProductDAO
+abstract class FavProductDatabase : RoomDatabase() {
+    abstract fun favProductDAO(): FavProductDAO
 
     companion object {
         @Volatile
-        private var INSTANCE: FavouriteProductDatabase? = null
-        fun getDatabase(context: Context): FavouriteProductDatabase {
+        private var INSTANCE: FavProductDatabase? = null
+        fun getDatabase(context: Context): FavProductDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    FavouriteProductDatabase::class.java,
-                    "subject_database"
+                    FavProductDatabase::class.java,
+                    "fav_product_database"
                 )
                     .fallbackToDestructiveMigration()
                     .build()

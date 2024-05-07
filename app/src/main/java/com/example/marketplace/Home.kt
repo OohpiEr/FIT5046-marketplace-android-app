@@ -7,32 +7,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.rounded.ShoppingCart
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -42,7 +29,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 
 /*
 class Home : ComponentActivity() {
@@ -76,8 +65,11 @@ fun PreviewHomescreen() {
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, favProductViewModel: FavProductViewModel) {
     val title = "Home"
+
+//    val favProducts by FavProductViewModel.allProducts.observeAsState(emptyList())
+
 
     Scaffold(
         topBar = {
@@ -90,7 +82,6 @@ fun HomeScreen(navController: NavController) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Text(
                             title,
                             maxLines = 1,
@@ -111,12 +102,56 @@ fun HomeScreen(navController: NavController) {
         },
 
         ) { innerPadding ->
-        HomeScrollContent(innerPadding)
+        HomeScrollContent(innerPadding, favProductViewModel)
     }
+
+
+//    if (insertDialog.value) {
+//        selectedProduct?.let { favProductViewModel.insertFavProduct(it) }
+//    }
+//        InsertSubjectDialog(
+//            onDismiss = { insertDialog.value = false },
+//            onSave = { subjectName ->
+//               favProductViewModel.insertProduct(Product(name = subjectName))
+//            }
+//        )
 }
 
+//@Composable
+//fun InsertSubjectDialog(
+//    onDismiss: () -> Unit,
+//    onSave: (String) -> Unit
+//) {
+//    var productName by remember { mutableStateOf("") }
+//    AlertDialog(
+//        onDismissRequest = onDismiss,
+//        title = { Text("Favourite Product") },
+//        confirmButton = {
+//            Button(
+//                onClick = {
+//                    onSave(productName)
+//                    onDismiss()
+//                }
+//            ) {
+//                Text("Save")
+//            }
+//        },
+//        dismissButton = {
+//            Button(onClick = onDismiss) {
+//                Text("Cancel")
+//            }
+//        },
+////        text = {
+////            TextField(
+////                value = productName,
+////                onValueChange = { productName = it },
+////                modifier = Modifier.fillMaxWidth()
+////            )
+////        }
+//    )
+//}
 @Composable
-fun HomeScrollContent(innerPadding: PaddingValues) {
+fun HomeScrollContent(innerPadding: PaddingValues, favProductViewModel: FavProductViewModel) {
     val db = Firebase.firestore
 
     val allProducts = remember { mutableStateListOf<Product>() }
@@ -134,6 +169,9 @@ fun HomeScrollContent(innerPadding: PaddingValues) {
             Log.d(TAG, "Error getting documents: ", exception)
         }
 
+    val selectedProduct = remember { mutableStateOf<Product?>(null) }
+    val insertDialog = remember { mutableStateOf(false) }
+
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
         contentPadding = PaddingValues(8.dp),
@@ -141,13 +179,17 @@ fun HomeScrollContent(innerPadding: PaddingValues) {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         content = {
             items(allProducts) { product ->
-                ProductCard(product)
+                ProductCard(product, insertDialog, selectedProduct)
             }
         },
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
     )
-
+    if (insertDialog.value) {
+        selectedProduct?.let { it.value?.let { it1 -> favProductViewModel.insertFavProduct(it1) }
+        insertDialog.value = false
+        }
+    }
 }
 
