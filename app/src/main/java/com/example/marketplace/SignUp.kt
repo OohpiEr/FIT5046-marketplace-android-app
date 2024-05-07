@@ -1,12 +1,8 @@
 package com.example.marketplace
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -47,21 +43,17 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
+/*
 class SignUp : ComponentActivity() {
     @SuppressLint("UnrememberedMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +71,7 @@ class SignUp : ComponentActivity() {
         }
         WindowCompat.setDecorFitsSystemWindows(window,false)
     }
-}
+}*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Gender(selectedGender: String, onGenderSelected: (String) -> Unit) {
@@ -208,23 +200,30 @@ fun SignUp(navController: NavController, databaseReference: DatabaseReference) {
                             onClick = {
                                 if(validateInput(context,email, username, password, selectedGender)) {
                                     val userObj = UserObj(email, username, password, selectedGender)
+                                    if(validateEmailFormat(email)){
+                                        val emailKey = email.replace(".", ",")
+                                        // Directly set the value of userObj to the database reference
+                                        databaseReference.child(emailKey).setValue(userObj)
+                                            .addOnSuccessListener {
+                                                // Write operation successful, show success toast
+                                                Toast.makeText(context, "Sign Up Succeed!", Toast.LENGTH_SHORT).show()
+                                                email=""
+                                                username = ""
+                                                password = ""
+                                                selectedGender = ""
 
-                                    val emailKey = email.replace(".", ",")
-                                    // Directly set the value of userObj to the database reference
-                                    databaseReference.child(emailKey).setValue(userObj)
-                                        .addOnSuccessListener {
-                                            // Write operation successful, show success toast
-                                            Toast.makeText(context, "Sign Up Succeed!", Toast.LENGTH_SHORT).show()
-                                            email=""
-                                            username = ""
-                                            password = ""
-                                            selectedGender = ""
+                                            }
+                                            .addOnFailureListener { error ->
+                                                // Write operation failed, show failure toast with error message
+                                                Toast.makeText(context, "Sign up fail: ${error.message}", Toast.LENGTH_SHORT).show()
+                                            }
 
-                                        }
-                                        .addOnFailureListener { error ->
-                                            // Write operation failed, show failure toast with error message
-                                            Toast.makeText(context, "Sign up fail: ${error.message}", Toast.LENGTH_SHORT).show()
-                                        } } },
+                                    }
+                                    else{
+                                        Toast.makeText(context, "Invalid email format!", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                      },
                             shape = RoundedCornerShape(5.dp),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -400,4 +399,8 @@ private fun saveUserEmailToFirebase(
         onFailure("User email is null or empty")
     }
 
+}
+fun validateEmailFormat(email: String): Boolean {
+    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+    return email.matches(emailRegex.toRegex())
 }
