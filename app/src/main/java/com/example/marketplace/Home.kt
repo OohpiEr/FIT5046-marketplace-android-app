@@ -1,50 +1,37 @@
 package com.example.marketplace
 
 //import androidx.compose.material3.MaterialTheme
-import androidx.compose.foundation.Image
+import android.content.ContentValues.TAG
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.rounded.ShoppingCart
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 
 /*
 class Home : ComponentActivity() {
@@ -78,13 +65,12 @@ fun PreviewHomescreen() {
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
-    val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
+fun HomeScreen(navController: NavController, favProductViewModel: FavProductViewModel) {
+    val title = "Home"
+
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            MediumTopAppBar(
+            TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
@@ -93,9 +79,8 @@ fun HomeScreen(navController: NavController) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Text(
-                            "Marketplace",
+                            title,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -109,76 +94,80 @@ fun HomeScreen(navController: NavController) {
                         modifier = Modifier.padding(8.dp)
                     )
                 },
-
-                actions = {
-                    // hamburger icon
-                    IconButton(onClick = { /* do something */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Localized description"
-                        )
-                    }
-                },
-                scrollBehavior = scrollBehavior
+//                scrollBehavior = scrollBehavior
             )
         },
 
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier.fillMaxWidth().height(80.dp),
-                actions = {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ){
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
-                        }
-                        IconButton(onClick = {
-                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
-                            navController.navigate("contact")
-
-
-                        },) {
-                            Icon(
-                                Icons.Filled.MailOutline,
-                                contentDescription = "Localized description",
-                            )
-                        }
-
-
-                        IconButton(onClick = {   navController.navigate("Addmerchant") }) {
-                            Icon(
-                                Icons.Filled.Add,
-                                contentDescription = "Localized description",
-                            )
-                        }
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                Icons.Filled.Favorite,
-                                contentDescription = "Localized description",
-                            )
-                        }
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                Icons.Filled.AccountCircle,
-                                contentDescription = "Localized description",
-                            )
-                        }
-
-                    }}
-            )
-        },
-    )  { innerPadding ->
-        HomeScrollContent(innerPadding)
+        ) { innerPadding ->
+        HomeScrollContent(innerPadding, favProductViewModel)
     }
+
+
+//    if (insertDialog.value) {
+//        selectedProduct?.let { favProductViewModel.insertFavProduct(it) }
+//    }
+//        InsertSubjectDialog(
+//            onDismiss = { insertDialog.value = false },
+//            onSave = { subjectName ->
+//               favProductViewModel.insertProduct(Product(name = subjectName))
+//            }
+//        )
 }
 
+//@Composable
+//fun InsertSubjectDialog(
+//    onDismiss: () -> Unit,
+//    onSave: (String) -> Unit
+//) {
+//    var productName by remember { mutableStateOf("") }
+//    AlertDialog(
+//        onDismissRequest = onDismiss,
+//        title = { Text("Favourite Product") },
+//        confirmButton = {
+//            Button(
+//                onClick = {
+//                    onSave(productName)
+//                    onDismiss()
+//                }
+//            ) {
+//                Text("Save")
+//            }
+//        },
+//        dismissButton = {
+//            Button(onClick = onDismiss) {
+//                Text("Cancel")
+//            }
+//        },
+////        text = {
+////            TextField(
+////                value = productName,
+////                onValueChange = { productName = it },
+////                modifier = Modifier.fillMaxWidth()
+////            )
+////        }
+//    )
+//}
 @Composable
-fun HomeScrollContent(innerPadding: PaddingValues) {
-    // TODO: remove this
-    val tempItems = 10
+fun HomeScrollContent(innerPadding: PaddingValues, favProductViewModel: FavProductViewModel) {
+    val db = Firebase.firestore
+
+    val allProducts = remember { mutableStateListOf<Product>() }
+
+    db.collection("products")
+        .get()
+        .addOnSuccessListener { result ->
+            for (document in result) {
+//                Log.d(TAG, "${document.id} => ${document.data}")
+                val p = document.toObject(Product::class.java)
+                allProducts.add(p)
+            }
+        }
+        .addOnFailureListener { exception ->
+            Log.d(TAG, "Error getting documents: ", exception)
+        }
+
+    val selectedProduct = remember { mutableStateOf<Product?>(null) }
+    val insertDialog = remember { mutableStateOf(false) }
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
@@ -186,64 +175,18 @@ fun HomeScrollContent(innerPadding: PaddingValues) {
         verticalItemSpacing = 8.dp,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         content = {
-            items(tempItems) {
-                ItemCard()
+            items(allProducts) { product ->
+                ProductCard(product, insertDialog, selectedProduct)
             }
-
         },
         modifier = Modifier
             .fillMaxSize()
             .padding(innerPadding)
     )
-}
-
-@Composable
-fun ItemCard() {
-    ElevatedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-        ),
-    ) {
-        Column {
-            Row() {
-                Image(
-                    painter = painterResource(id = R.drawable.milk),
-//                    painter = painterResource(id = R.drawable.appicon),
-                    contentDescription = null
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .height(56.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            )
-            {
-                Text(
-                    text = "Milk",
-                    modifier = Modifier
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center,
-                )
-                Spacer(Modifier.weight(1f))
-                IconButton(onClick = { /* do something */ }) {
-                    Icon(
-                        imageVector = Icons.Filled.FavoriteBorder,
-                        contentDescription = "Localized description"
-                    )
-                }
-            }
-            Row()
-            {
-                Text(
-                    text = "$50",
-                    modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
-                )
-            }
+    if (insertDialog.value) {
+        selectedProduct?.let { it.value?.let { it1 -> favProductViewModel.insertFavProduct(it1) }
+        insertDialog.value = false
         }
-
     }
 }
+

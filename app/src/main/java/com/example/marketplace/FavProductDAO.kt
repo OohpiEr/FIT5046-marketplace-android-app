@@ -6,14 +6,18 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+
 @Dao
-interface ProductDAO {
+interface FavProductDAO {
     @Query("SELECT * FROM Product")
-    fun getAllProducts(): Flow<List<Product>>
+    fun getAllFavProducts(): Flow<List<Product>>
+
     @Insert
-    suspend fun insertProduct(product: Product)
+    suspend fun insertFavProduct(product: Product)
+
     @Update
-    suspend fun updateProduct(product: Product)
+    suspend fun updateFavProduct(product: Product)
+
     @Delete
-    suspend fun deleteProduct(product: Product)
+    suspend fun deleteFavProduct(product: Product)
 }
