@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,8 +24,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,12 +41,14 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,13 +59,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import com.google.firebase.firestore.FirebaseFirestore
@@ -66,10 +82,12 @@ import java.io.IOException
 
 class Addmerchant {
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddMerchant(productViewModel: ProductViewModel){
+fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
+
     val context = LocalContext.current
     var imageBase64: String? by remember { mutableStateOf(null) }
     val firestore = FirebaseFirestore.getInstance()
@@ -107,15 +125,15 @@ fun AddMerchant(productViewModel: ProductViewModel){
                 navigationIcon = {
                     IconButton(onClick = {
                         coroutineScope.launch {
-//                            drawerState.open()
                         }
                     }) {
                         Icon(Icons.Filled.Menu, contentDescription = "")
                     }
                 },
             )
-        }
-    ){ paddingValues ->
+        })
+
+    { paddingValues ->
         Column(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
@@ -253,22 +271,15 @@ fun AddMerchant(productViewModel: ProductViewModel){
                     .height(100.dp)
 
             )
-            Row(modifier = Modifier.padding(start = 8.dp, top = 8.dp)){
-                Box(modifier = Modifier
-                    .height(65.dp)
-                    .width(215.dp)){
-//                Button(onClick = { /*TODO*/ }) {
-//                    Text("   Cancel   ")
-//                }
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp)){
+
+                Button(onClick = {navController.navigate("Map") }) {
+                    Text("   Map   ")
                 }
-                Text("               ")
-                Box(modifier = Modifier
-                    .height(65.dp)
-                    .width(215.dp),contentAlignment = Alignment.Center){
-                    Button(onClick = { showDialog = true }) {
+                Text("                                                      ")
+                Button(onClick = { showDialog = true }) {
                         Text("Confirm")
                     }
-                }
             }
             if (showDialog) {
                 AlertDialog(
@@ -323,6 +334,18 @@ fun AddMerchant(productViewModel: ProductViewModel){
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
             val byteArray = this.toByteArray()
             return Base64.encodeToString(byteArray, Base64.DEFAULT)
+        }
+    }
+    @Composable
+    fun AppNavigation(productViewModel: ProductViewModel) {
+        val navController = rememberNavController()
+        val map = Map()// Creates and remembers a NavController
+
+        // NavHost links the NavController to a navigation graph
+        NavHost(navController = navController, startDestination = "Addmerchant") {
+            composable("Addmerchant") { AddProduct(productViewModel,navController) }
+            composable("Map") { map.MapScreen(navController) }
+            // Add more destinations as needed
         }
     }
 }
