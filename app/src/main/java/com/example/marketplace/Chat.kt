@@ -77,17 +77,41 @@ fun ChatScreen(navController: NavController) {
     val receiverName: String? = navController.previousBackStackEntry?.savedStateHandle?.get("receiver")
     val messageText = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
-
+    val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
     Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = { Text("Chat") },
+            topBar = {
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    title = {
+                        Text(
+                            "Chat",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = {  }) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Localized description"
+                            )
+                        }
+                    },
+                )
 
-            )
         },
         content = { innerPadding ->
             Column(
@@ -201,7 +225,6 @@ fun MessageBubble(message: Message, currentUserId: String) {
     val instant = Instant.ofEpochMilli(message.timestamp )
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault())
     val formattedTime = formatter.format(instant)
-
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = if (isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
@@ -211,7 +234,6 @@ fun MessageBubble(message: Message, currentUserId: String) {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (!isCurrentUser) {
-
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,
@@ -219,25 +241,27 @@ fun MessageBubble(message: Message, currentUserId: String) {
                             .size(40.dp)
                             .padding(start = 10.dp)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
                     Column(
                         horizontalAlignment = Alignment.Start
                     ){
-
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = Color.White
+                                containerColor = Color.LightGray
                             ),
                             modifier = Modifier
                                 .padding(8.dp)
-                                .padding(horizontal = 8.dp)
-                                .padding(start = 10.dp)
+                                .padding(horizontal = 4.dp)
+                                .padding(start = 5.dp)
                         ) {
                             Text(
                                 text = message.sendName + ":        " + formattedTime,
                                 modifier = Modifier.padding(8.dp),
                                 textAlign =  TextAlign.End,
-                                style = TextStyle(fontSize = 12.sp) )
+                                style = TextStyle(fontSize = 12.sp)
+                            )
                             Text(
                                 text = message.text,
                                 modifier = Modifier.padding(8.dp),
@@ -245,13 +269,10 @@ fun MessageBubble(message: Message, currentUserId: String) {
                             )
                         }
                     }
-
                 } else {
-                    // 如果是当前用户，则显示当前用户的默认头像和名字
                     Column(
                         horizontalAlignment = Alignment.End
                     ){
-
                         Card(
                             colors = CardDefaults.cardColors(
                                 containerColor = Color(0xFFFAF3E8)
@@ -259,13 +280,14 @@ fun MessageBubble(message: Message, currentUserId: String) {
                             modifier = Modifier
                                 .padding(8.dp)
                                 .padding(horizontal = 8.dp)
-                                .padding(start = 10.dp),
+                                .padding(start = 5.dp),
                         ) {
                             Text(
-                                text = message.sendName + ":       from " + formattedTime,
+                                text = "You" + ":       at " + formattedTime,
                                 modifier = Modifier.padding(8.dp),
                                 textAlign =  TextAlign.End,
-                                style = TextStyle(fontSize = 12.sp) )
+                                style = TextStyle(fontSize = 12.sp)
+                            )
                             Text(
                                 text = message.text,
                                 modifier = Modifier.padding(8.dp),
@@ -274,7 +296,8 @@ fun MessageBubble(message: Message, currentUserId: String) {
                         }
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,
@@ -284,9 +307,11 @@ fun MessageBubble(message: Message, currentUserId: String) {
                     )
                 }
             }
-
         }
     }
+
+
+
 }
 
 
@@ -377,7 +402,9 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                 )
             },
             navigationIcon = {
-                IconButton(onClick = { /* do something */ }) {
+                IconButton(onClick = {
+                    navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                    navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Localized description"
@@ -385,7 +412,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                 }
             },
             actions = {
-                IconButton(onClick = { /* do something */ }) {
+                IconButton(onClick = {  }) {
                     Icon(
                         imageVector = Icons.Filled.Menu,
                         contentDescription = "Localized description"
@@ -406,7 +433,9 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                         modifier = Modifier
                             .fillMaxWidth()
                     ){
-                        IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.navigate("home")}) {
                             Icon(Icons.Filled.Home, contentDescription = "Localized description")
                         }
                         IconButton(onClick = {
@@ -472,17 +501,27 @@ fun ContactItem(contact: Contact, navController: NavController, name: String, id
                 navController.currentBackStackEntry?.savedStateHandle?.set("receiver", contact.name)
                 navController.currentBackStackEntry?.savedStateHandle?.set("sender", name)
                 navController.currentBackStackEntry?.savedStateHandle?.set("Id", id)
-
                 navController.navigate("chat")
             }
     ) {
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
-            Text(
-                text = contact.name +"   " + contact.email,
-                style = MaterialTheme.typography.bodyMedium
-            )
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = contact.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = contact.email,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
+            }
         }
     }
 }

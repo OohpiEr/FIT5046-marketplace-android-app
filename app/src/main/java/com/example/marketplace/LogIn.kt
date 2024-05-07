@@ -102,6 +102,9 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
     var usernameDB by remember{ mutableStateOf("") }
     val context= LocalContext.current
     val emailKey = email.replace(".", ",")
+    val sharedPreferences = LocalContext.current.getSharedPreferences("myPreferences", Context.MODE_PRIVATE)
+    val savedEmail = remember { mutableStateOf(sharedPreferences.getString("email", "")) }
+
     Surface(
         color = marketplace_light_primary, // Set the background color for the column
         modifier = Modifier.fillMaxSize()
@@ -141,7 +144,8 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                             onValueChange = { email = it },
                             label = { Text("Email") },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth().padding(8.dp)
+                            modifier = Modifier.fillMaxWidth().padding(8.dp),
+                            placeholder = { savedEmail.value?.let { Text(it) } }
                         )
                         OutlinedTextField(
                             value = password,
@@ -156,6 +160,7 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                             onClick = {
                                 // Example usage of validateInput in login logic
                                 if (validateInput(email, password)) {
+                                    sharedPreferences.edit().putString("email", email).apply()
                                     databaseReference.child(emailKey).get().addOnSuccessListener { snapshot ->
                                         val userObj = snapshot.getValue(UserObj::class.java)
                                         userObj?.let {

@@ -129,6 +129,7 @@ fun HomeScreen(navController: NavController) {
                 scrollBehavior = scrollBehavior
             )
         },
+
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.fillMaxWidth().height(80.dp),
