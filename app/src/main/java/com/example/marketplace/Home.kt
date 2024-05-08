@@ -246,7 +246,6 @@ fun HomeScrollContent(
         },
         modifier = Modifier
             .fillMaxSize()
-            .padding(innerPadding)
     )
     if (insertDialog.value) {
         selectedProduct?.let { it.value?.let { it1 -> favProductViewModel.insertFavProduct(it1) }

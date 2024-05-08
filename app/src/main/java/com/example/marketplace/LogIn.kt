@@ -1,8 +1,6 @@
 package com.example.marketplace
-import BottomAppBar
 import android.app.Activity
 import android.content.Context
-//import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -102,19 +100,19 @@ class LogIn : ComponentActivity() {
 class LogIn : ComponentActivity() {
     private val favProductViewModel: FavProductViewModel by viewModels()
     private val productViewModel: ProductViewModel by viewModels()
-    private val MessageViewModel: MessageViewModel by viewModels()
+    private val messageViewModel: MessageViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
-        val firebaseDatabase = FirebaseDatabase.getInstance();
-        val databaseReference = firebaseDatabase.getReference("UserInfo");
+        val firebaseDatabase = FirebaseDatabase.getInstance()
+        val databaseReference = firebaseDatabase.getReference("UserInfo")
 
         setContent {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "login") {
                 composable("login") { SignIn(navController, databaseReference = databaseReference) }
                 composable("signup") { SignUp(navController, databaseReference = databaseReference) }
-                composable("contact") { ContactScreen(MessageViewModel,navController) }
+                composable("contact") { ContactScreen(messageViewModel,navController) }
                 composable("chat") { ChatScreen(navController) }
                 composable("Addmerchant") { Addmerchant().AddProduct(productViewModel,navController) }
                 composable("Map") { Map().MapScreen(navController) }
@@ -206,7 +204,7 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                                             genderDB = it.userGender
                                             usernameDB = it.userUsername
 
-                                            if(emailDB.equals(email) && passwordDB.equals(password)) {
+                                            if(emailDB == email && passwordDB == password) {
                                                 Toast.makeText(context, "Log In Succeed!", Toast.LENGTH_SHORT).show()
                                                 navController.currentBackStackEntry?.savedStateHandle?.set("email", emailDB)
                                                 navController.currentBackStackEntry?.savedStateHandle?.set("username", usernameDB)
