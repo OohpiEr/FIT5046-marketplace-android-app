@@ -389,11 +389,3 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
         }
     }
 }
-fun checkNotNullOrEmpty(vararg values: String): Boolean {
-    for (value in values) {
-        if (value.isNullOrEmpty()) {
-            return false
-        }
-    }
-    return true
-}
