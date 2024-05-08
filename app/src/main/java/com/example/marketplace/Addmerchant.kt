@@ -101,7 +101,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
