@@ -1,5 +1,6 @@
 package com.example.marketplace
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -80,6 +81,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ChatScreen(navController: NavController) {
     val db = Firebase.firestore
@@ -128,12 +130,11 @@ fun ChatScreen(navController: NavController) {
                 )
 
         },
-        content = { innerPadding ->
+        content = {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(bottom = 50.dp)
+                    .padding(bottom = 20.dp)
             ) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
@@ -385,20 +386,15 @@ fun sendMessage(
 @Composable
 fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController) {
     val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
+    val username: String? = navController.previousBackStackEntry?.savedStateHandle?.get("username")
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val contacts = remember { mutableStateOf<List<Contact>>(emptyList()) }
-    var name by remember { mutableStateOf("") }
     LaunchedEffect(key1 = true) {
         migrateDataFromRealtimeToFirestore()
         if (email != null) {
             viewModel.fetchMessages(currentUserID = email) { fetchedContacts ->
                 contacts.value = fetchedContacts.value
             }
-        }
-        val userDocument =
-            email?.let { FirebaseFirestore.getInstance().collection("users").document(it).get().await() }
-        if (userDocument != null) {
-            name = userDocument.getString("name") ?: ""
         }
     }
 
@@ -418,6 +414,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
             navigationIcon = {
                 IconButton(onClick = {
                     navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                     navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
@@ -449,35 +446,35 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                     ){
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("home")}) {
                             Icon(Icons.Filled.Home, contentDescription = "Localized description")
                         }
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("contact")
-
-
                         },) {
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
                             )
                         }
-                        IconButton(onClick = {  navController.navigate("Addmerchant") }) {
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
+                            navController.navigate("Addmerchant") }) {
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "Localized description",
                             )
                         }
-                        IconButton(onClick = { /* do something */ }) {
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
+                            navController.navigate("Favourites") }) {
                             Icon(
                                 Icons.Filled.Favorite,
-                                contentDescription = "Localized description",
-                            )
-                        }
-                        IconButton(onClick = { /* do something */ }) {
-                            Icon(
-                                Icons.Filled.AccountCircle,
                                 contentDescription = "Localized description",
                             )
                         }
@@ -495,8 +492,8 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                 modifier = Modifier.weight(1f)
             ) {
                 items(contacts.value) { contact ->
-                    if (email != null) {
-                        ContactItem(contact = contact, navController = navController, name,  email)
+                    if (email != null && username != null) {
+                        ContactItem(contact = contact, navController = navController, username, email)
                     }
                 }
             }
@@ -505,7 +502,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
 }
 
 @Composable
-fun ContactItem(contact: Contact, navController: NavController, name: String, id:String) {
+fun ContactItem(contact: Contact, navController: NavController, name: String, email:String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -514,7 +511,7 @@ fun ContactItem(contact: Contact, navController: NavController, name: String, id
                 navController.currentBackStackEntry?.savedStateHandle?.set("email", contact.email)
                 navController.currentBackStackEntry?.savedStateHandle?.set("receiver", contact.name)
                 navController.currentBackStackEntry?.savedStateHandle?.set("sender", name)
-                navController.currentBackStackEntry?.savedStateHandle?.set("Id", id)
+                navController.currentBackStackEntry?.savedStateHandle?.set("Id", email)
                 navController.navigate("chat")
             }
     ) {
@@ -540,7 +537,7 @@ fun ContactItem(contact: Contact, navController: NavController, name: String, id
     }
 }
 
-data class Contact(val name: String, val email: String,val id:String)
+data class Contact(val name: String, val email: String)
 
 class MessageViewModel : ViewModel() {
     private val db = Firebase.firestore
@@ -567,7 +564,6 @@ class MessageViewModel : ViewModel() {
                                 senderID?.let { receiverIDs.add(it) }
                             }
                             val uniqueIDs = (senderIDs + receiverIDs).distinct()
-                            Log.d("MessageViewModel", "Unique IDs: $uniqueIDs")
 
                             if (uniqueIDs.isNotEmpty()) {
                                 db.collection("users").whereIn(FieldPath.documentId(), uniqueIDs).get().addOnSuccessListener { querySnapshot ->
@@ -575,8 +571,7 @@ class MessageViewModel : ViewModel() {
                                     for (document in querySnapshot.documents) {
                                         val name = document.getString("name") ?: ""
                                         val email = document.getString("email") ?: ""
-                                        val id = document.id
-                                        val newContact = Contact(name, email, id)
+                                        val newContact = Contact(name, email)
                                         contactsList.add(newContact)
                                     }
                                     contacts.value = contactsList

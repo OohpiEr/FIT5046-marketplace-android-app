@@ -4,6 +4,6 @@ enum class Routes(val value: String) {
     Home("Home"),
     Favourites("Favourites"),
     AddProduct("Add Product"),
-    Chat("Chat"),
+    Chat("Contact"),
 //    Account("Account"),
 }
