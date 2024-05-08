@@ -86,7 +86,7 @@ fun BottomAppBar(navigationController: NavController, favProductViewModel: FavPr
                 ChatScreen(navController)
             }
             composable(Routes.AddProduct.value) {
-                Addmerchant().AddProduct(productViewModel, navController)
+                Addmerchant().AppNavigation(productViewModel)
             }
             composable(Routes.Favourites.value) {
                 FavScreen(navController, favProductViewModel)

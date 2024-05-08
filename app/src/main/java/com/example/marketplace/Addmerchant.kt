@@ -270,7 +270,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                 label = { Text("Description", fontSize = 12.sp, fontStyle = FontStyle.Italic) },
                 modifier = Modifier
                     .width(375.dp)
-                    .height(100.dp)
+                    .height(80.dp)
 
             )
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp)){

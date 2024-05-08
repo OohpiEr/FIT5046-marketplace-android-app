@@ -119,8 +119,8 @@ fun MapScreen(navController: NavController) {
                     Button(
                         onClick = {  navController.navigate("Addmerchant")},
                         modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(16.dp)
+                            .align(Alignment.TopStart)
+                            .padding(top = 32.dp, start = 16.dp)
                     ) {
                         Text("Confirm")
                     }
