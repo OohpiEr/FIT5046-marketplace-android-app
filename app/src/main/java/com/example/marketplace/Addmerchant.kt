@@ -117,7 +117,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                 ),
                 title = {
                     Text(
-                        "Add Product",
+                        " Add Product",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
