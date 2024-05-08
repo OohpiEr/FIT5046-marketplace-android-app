@@ -25,8 +25,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
@@ -111,41 +114,82 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
         }
         return true
     }
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = {
-                    Text(
-                        " Add Product",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+    Scaffold( topBar = {
+        CenterAlignedTopAppBar(
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                titleContentColor = MaterialTheme.colorScheme.primary,
+            ),
+            title = {
+                Text(
+                    "Add Product",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = {
+                    navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                    navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
+                    navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Localized description"
                     )
-                },
-                navigationIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Localized description"
-                        )
+                }
+            },
+        )
+    },
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp),
+                actions = {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ){
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
+                            navController.navigate("home")}) {
+                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+                        }
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
+                            navController.navigate("contact")
+                        },) {
+                            Icon(
+                                Icons.Filled.MailOutline,
+                                contentDescription = "Localized description",
+                            )
+                        }
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
+                            navController.navigate("Addmerchant") }) {
+                            Icon(
+                                Icons.Filled.Add,
+                                contentDescription = "Localized description",
+                            )
+                        }
+                        IconButton(onClick = {
+                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
+                            navController.navigate("Favourites") }) {
+                            Icon(
+                                Icons.Filled.Favorite,
+                                contentDescription = "Localized description",
+                            )
+                        }
 
-                },
-//                actions = {
-//                    IconButton(onClick = {  }) {
-//                        Icon(
-//                            imageVector = Icons.Filled.Menu,
-//                            contentDescription = "Localized description"
-//                        )
-//                    }
-//                },
+                    }}
             )
-
-        }
-    )
-
-    { paddingValues ->
+        },
+    )   { paddingValues ->
         Column(modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
