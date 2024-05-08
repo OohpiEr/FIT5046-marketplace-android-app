@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Base64
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -79,6 +80,8 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
     var imageBase64: String? by remember { mutableStateOf(null) }
     val firestore = FirebaseFirestore.getInstance()
     val productsCollection = firestore.collection("products")
+    val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
+    val username: String? = navController.previousBackStackEntry?.savedStateHandle?.get("username")
     var imageUri: Uri? by remember {
         mutableStateOf(null)
     }
@@ -273,23 +276,45 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                     .height(80.dp)
 
             )
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp)){
+            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp)) {
 
-                Button(onClick = {navController.navigate("Map") }) {
+                Button(onClick = { navController.navigate("Map") }) {
                     Text("   Map   ")
                 }
                 Text("                                                      ")
-                Button(onClick = { showDialog = true }) {
-                        Text("Confirm")
+                Button(onClick = {
+                    if (imageBase64?.let {
+                            checkNotNullOrEmpty(
+                                name,
+                                it,
+                                price,
+                                quantity,
+                                selectedState,
+                                address,
+                                description
+                            )
+                        } == true
+                    ) {
+                        showDialog = true
                     }
+                    else{
+                        Toast.makeText(context,"Please Fill in all the rows",Toast.LENGTH_SHORT).show()
+                    }
+
+                }) {
+                    Text("Confirm")
+                }
+
             }
-            if (showDialog) {
+            if (showDialog ) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },
                     title = { Text("Confirm Action") },
                     text = { Text("Do you want to confirm or cancel this action?") },
                     confirmButton = {
-                        Button(onClick = {
+
+
+                            Button(onClick = {
                             productViewModel.insertProduct(
                                 Product(name = name,photo = imageBase64!!,price = price, quantity = quantity, state = selectedState,address = address, description = description ))
                             val newProduct = hashMapOf(
@@ -299,14 +324,18 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                                 "quantity" to quantity,
                                 "state" to selectedState,
                                 "address" to address,
-                                "description" to description
+                                "description" to description,
+                                "ownerEmail" to email,
+                                "ownerName" to email
+
                             )
                             productsCollection.add(newProduct)
-                            Toast.makeText(context, "Product added successfully", Toast.LENGTH_SHORT).show()
-                            showDialog = false
+                              showDialog = false
                         }) {
                             Text("Confirm")
                         }
+
+
                     },
                     dismissButton = {
                         Button(onClick = { showDialog = false }) {
@@ -350,4 +379,12 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
             // Add more destinations as needed
         }
     }
+}
+fun checkNotNullOrEmpty(vararg values: String): Boolean {
+    for (value in values) {
+        if (value.isNullOrEmpty()) {
+            return false
+        }
+    }
+    return true
 }

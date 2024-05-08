@@ -14,5 +14,7 @@ data class Product(
     val quantity: String = "",
     val state: String = "",
     val address: String = "",
-    val description: String = ""
+    val description: String = "",
+    val ownerEmail: String = "",
+    val ownerName: String = ""
 )
