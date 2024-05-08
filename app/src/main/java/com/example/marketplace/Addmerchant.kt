@@ -21,7 +21,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -99,6 +101,13 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
     var isExpanded by remember { mutableStateOf(false) }
     var selectedState by remember { mutableStateOf(states[0]) }
     var showDialog by remember { mutableStateOf(false) }
+    fun validateFields(): Boolean {
+        if (name.isEmpty() || brand.isEmpty() || quantity.isEmpty() || price.isEmpty() || imageBase64 == null) {
+            Toast.makeText(context, "Please enter all the information", Toast.LENGTH_LONG).show()
+            return false
+        }
+        return true
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -114,22 +123,20 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.Filled.Add,
                             contentDescription = "Localized description"
                         )
-                    }
+
                 },
-                actions = {
-                    IconButton(onClick = {  }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Localized description"
-                        )
-                    }
-                },
+//                actions = {
+//                    IconButton(onClick = {  }) {
+//                        Icon(
+//                            imageVector = Icons.Filled.Menu,
+//                            contentDescription = "Localized description"
+//                        )
+//                    }
+//                },
             )
 
         }
@@ -279,7 +286,9 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                     Text("   Map   ")
                 }
                 Text("                                                      ")
-                Button(onClick = { showDialog = true }) {
+                Button(onClick = {
+                    if (validateFields()){showDialog = true}
+                     }) {
                         Text("Confirm")
                     }
             }
@@ -317,6 +326,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
             }
         }
     }
+
 }
     fun uriToBitmap(context: Context, imageUri: Uri): Bitmap? {
         return try {
