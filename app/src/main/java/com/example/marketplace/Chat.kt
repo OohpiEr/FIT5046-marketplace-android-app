@@ -118,15 +118,7 @@ fun ChatScreen(navController: NavController) {
                                 contentDescription = "Localized description"
                             )
                         }
-                    },
-                    actions = {
-                        IconButton(onClick = {  }) {
-                            Icon(
-                                imageVector = Icons.Filled.Menu,
-                                contentDescription = "Localized description"
-                            )
-                        }
-                    },
+                    }
                 )
 
         },
