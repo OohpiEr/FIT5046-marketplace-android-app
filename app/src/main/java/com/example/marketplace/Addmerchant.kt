@@ -133,7 +133,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                     navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                     navController.popBackStack() }) {
                     Icon(
-                        imageVector = Icons.Filled.Add,
+                        imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Localized description"
                     )
                 }
@@ -339,34 +339,14 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                      }) {
                         Text("Confirm")}
 
-//                    if (imageBase64?.let {
-//                            checkNotNullOrEmpty(
-//                                name,
-//                                it,
-//                                price,
-//                                quantity,
-//                                selectedState,
-//                                address,
-//                                description
-//                            )
-//                        } == true
-//                    ) {
-//                        showDialog = true
-//
-//                    }
-//                    else{
-//                        Toast.makeText(context,"Please Fill in all the rows",Toast.LENGTH_SHORT).show()
-//                    }
                 }
-            if (showDialog ) {
+            if (showDialog) {
                 AlertDialog(
                     onDismissRequest = { showDialog = false },
                     title = { Text("Confirm Action") },
                     text = { Text("Do you want to confirm or cancel this action?") },
                     confirmButton = {
-
-
-                            Button(onClick = {
+                        Button(onClick = {
                             productViewModel.insertProduct(
                                 Product(name = name,photo = imageBase64!!,price = price, quantity = quantity, state = selectedState,address = address, description = description ))
                             val newProduct = hashMapOf(
@@ -376,18 +356,14 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                                 "quantity" to quantity,
                                 "state" to selectedState,
                                 "address" to address,
-                                "description" to description,
-                                "ownerEmail" to email,
-                                "ownerName" to email
-
+                                "description" to description
                             )
                             productsCollection.add(newProduct)
-                              showDialog = false
+                            Toast.makeText(context, "Product added successfully", Toast.LENGTH_SHORT).show()
+                            showDialog = false
                         }) {
                             Text("Confirm")
                         }
-
-
                     },
                     dismissButton = {
                         Button(onClick = { showDialog = false }) {
