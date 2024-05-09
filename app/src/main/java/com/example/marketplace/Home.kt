@@ -40,6 +40,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
+import com.example.marketplace.ui.theme.marketplace_light_onActive
 import com.example.marketplace.ui.theme.marketplace_light_onPrimary
 import com.example.marketplace.ui.theme.marketplace_light_outline
 import com.example.marketplace.ui.theme.marketplace_light_primary
@@ -106,7 +107,7 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                             Icon(
                                 Icons.Filled.Home,
                                 contentDescription = "Localized description",
-                                tint = marketplace_light_outline,
+                                tint = marketplace_light_onActive,
                             )
                         }
                         IconButton(
@@ -165,24 +166,18 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                                 tint = marketplace_light_onPrimary,
                             )
                         }
-
-
                         LogoutButton(navController)
-
-                    }}
-
                     }
                 }
-
             )
-        },
-
-        ) { innerPadding ->
+        }
+    ) { innerPadding ->
         if (email != null && username != null) {
             HomeScrollContent(innerPadding, favProductViewModel, email, username, navController)
         }
     }
 }
+
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
