@@ -1,6 +1,5 @@
 package com.example.marketplace
 
-//import androidx.compose.material3.MaterialTheme
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.util.Log
@@ -42,37 +41,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
+import com.example.marketplace.ui.theme.marketplace_light_onPrimary
+import com.example.marketplace.ui.theme.marketplace_light_primary
 
-/*
-class Home : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val viewModel = MessageViewModel()
-        setContent {
-            val navController = rememberNavController()
-           NavHost(navController = navController, startDestination = "home") {
-                composable("chat") { ContactScreen(viewModel, navController) }
-                composable("home"){ HomeScreen(navController)}
-            }
-        }
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-    }
-
-}
-*/
-/*
-@Composable
-@Preview
-fun PreviewHomescreen() {
-    MarketplaceTheme {
-        HomeScreen(navController)
-    }
-}
-*/
-/*
-* https://developer.android.com/jetpack/compose/components/app-bars
-*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, favProductViewModel: FavProductViewModel) {
@@ -83,8 +55,8 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    containerColor =  marketplace_light_primary,
+                    titleContentColor =  marketplace_light_onPrimary,
                 ),
                 title = {
                     Row(
@@ -101,15 +73,15 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                     Icon(
                         imageVector = Icons.Rounded.ShoppingCart,
                         contentDescription = "Localized description",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = marketplace_light_onPrimary,
                         modifier = Modifier.padding(8.dp)
                     )
                 },
-//                scrollBehavior = scrollBehavior
             )
         },
         bottomBar = {
             BottomAppBar(
+                containerColor =  marketplace_light_primary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp),
@@ -123,7 +95,10 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("home")}) {
-                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+                            Icon(Icons.Filled.Home,
+                                contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary,
+                            )
                         }
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
@@ -133,7 +108,8 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
-                            )
+                                tint = marketplace_light_onPrimary,
+                                )
                         }
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
@@ -142,7 +118,8 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "Localized description",
-                            )
+                                tint = marketplace_light_onPrimary,
+                                )
                         }
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
@@ -151,7 +128,8 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                             Icon(
                                 Icons.Filled.Favorite,
                                 contentDescription = "Localized description",
-                            )
+                                tint = marketplace_light_onPrimary,
+                                )
                         }
 
                     }}

@@ -38,6 +38,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
@@ -65,6 +66,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.marketplace.ui.theme.marketplace_light_onPrimary
+import com.example.marketplace.ui.theme.marketplace_light_primary
+import com.example.marketplace.ui.theme.marketplace_light_primaryContainer
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldPath
@@ -100,8 +104,8 @@ fun ChatScreen(navController: NavController) {
             topBar = {
                 CenterAlignedTopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
+                        containerColor =  marketplace_light_primary,
+                        titleContentColor =  marketplace_light_onPrimary,
                     ),
                     title = {
                         Text(
@@ -117,8 +121,9 @@ fun ChatScreen(navController: NavController) {
                             navController.popBackStack() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Localized description"
-                            )
+                                contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary,
+                                )
                         }
                     }
                 )
@@ -398,8 +403,8 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary,
+                containerColor =  marketplace_light_primary,
+                titleContentColor =  marketplace_light_onPrimary,
             ),
             title = {
                 Text(
@@ -415,8 +420,9 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                     navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Localized description"
-                    )
+                        contentDescription = "Localized description",
+                        tint = marketplace_light_onPrimary,
+                        )
                 }
             },
             actions = {
@@ -432,6 +438,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
     },
         bottomBar = {
             BottomAppBar(
+                containerColor =  marketplace_light_primary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp),
@@ -445,7 +452,9 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("home")}) {
-                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+                            Icon(Icons.Filled.Home,
+                                contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary,)
                         }
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
@@ -455,6 +464,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary,
                             )
                         }
                         IconButton(onClick = {
@@ -464,6 +474,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary,
                             )
                         }
                         IconButton(onClick = {
@@ -473,6 +484,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             Icon(
                                 Icons.Filled.Favorite,
                                 contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary,
                             )
                         }
 
@@ -511,6 +523,9 @@ fun ContactItem(contact: Contact, navController: NavController, name: String, em
                 navController.currentBackStackEntry?.savedStateHandle?.set("Id", email)
                 navController.navigate("chat")
             }
+    ) {Surface(
+        color = marketplace_light_onPrimary, // Set your desired background color here
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier.padding(8.dp)
@@ -532,6 +547,11 @@ fun ContactItem(contact: Contact, navController: NavController, name: String, em
             }
         }
     }
+        Divider(color = Color.LightGray, thickness = 1.dp, modifier = Modifier.fillMaxWidth())
+
+    }
+
+
 }
 
 data class Contact(val name: String, val email: String)

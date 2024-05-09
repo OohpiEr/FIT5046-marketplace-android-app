@@ -66,6 +66,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.example.marketplace.ui.theme.marketplace_light_onPrimary
+import com.example.marketplace.ui.theme.marketplace_light_primary
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -117,8 +119,8 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
     Scaffold( topBar = {
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary,
+                containerColor =  marketplace_light_primary,
+                titleContentColor =  marketplace_light_onPrimary,
             ),
             title = {
                 Text(
@@ -134,14 +136,16 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                     navController.popBackStack() }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Localized description"
-                    )
+                        contentDescription = "Localized description",
+                        tint = marketplace_light_onPrimary,
+                        )
                 }
             },
         )
     },
         bottomBar = {
             BottomAppBar(
+                containerColor =  marketplace_light_primary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp),
@@ -165,7 +169,8 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
-                            )
+                                tint = marketplace_light_onPrimary,
+                                )
                         }
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
@@ -174,7 +179,8 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "Localized description",
-                            )
+                                tint = marketplace_light_onPrimary,
+                                )
                         }
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
@@ -183,7 +189,8 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                             Icon(
                                 Icons.Filled.Favorite,
                                 contentDescription = "Localized description",
-                            )
+                                tint = marketplace_light_onPrimary,
+                                )
                         }
 
                     }}
