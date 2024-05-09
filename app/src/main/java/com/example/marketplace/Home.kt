@@ -55,8 +55,8 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor =  marketplace_light_primary,
-                    titleContentColor =  marketplace_light_onPrimary,
+                    containerColor = marketplace_light_primary,
+                    titleContentColor = marketplace_light_onPrimary,
                 ),
                 title = {
                     Row(
@@ -81,7 +81,7 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
         },
         bottomBar = {
             BottomAppBar(
-                containerColor =  marketplace_light_primary,
+                containerColor = marketplace_light_primary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp),
@@ -90,57 +90,96 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                         horizontalArrangement = Arrangement.SpaceAround,
                         modifier = Modifier
                             .fillMaxWidth()
-                    ){
+                    ) {
                         IconButton(onClick = {
-                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
-                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
-                            navController.navigate("home")}) {
-                            Icon(Icons.Filled.Home,
+                            //Maintain user identify during navigation
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "email",
+                                email
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "username",
+                                username
+                            )
+                            navController.navigate("home")
+                        }) {
+                            Icon(
+                                Icons.Filled.Home,
                                 contentDescription = "Localized description",
                                 tint = marketplace_light_outline,
                             )
                         }
-                        IconButton(onClick = {
-                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
-                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
-                            navController.navigate("contact")
-                        },) {
+                        IconButton(
+                            onClick = {
+                                //Maintain user identify during navigation
+                                navController.currentBackStackEntry?.savedStateHandle?.set(
+                                    "email",
+                                    email
+                                )
+                                navController.currentBackStackEntry?.savedStateHandle?.set(
+                                    "username",
+                                    username
+                                )
+                                navController.navigate("contact")
+                            },
+                        ) {
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
                                 tint = marketplace_light_onPrimary,
-                                )
+                            )
                         }
                         IconButton(onClick = {
-                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
-                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
-                            navController.navigate("Addmerchant") }) {
+                            //Maintain user identify during navigation
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "email",
+                                email
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "username",
+                                username
+                            )
+                            navController.navigate("Addmerchant")
+                        }) {
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "Localized description",
                                 tint = marketplace_light_onPrimary,
-                                )
+                            )
                         }
                         IconButton(onClick = {
-                            navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
-                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
-                            navController.navigate("Favourites") }) {
+                            //Maintain user identify during navigation
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "email",
+                                email
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                "username",
+                                username
+                            )
+                            navController.navigate("Favourites")
+                        }) {
                             Icon(
                                 Icons.Filled.Favorite,
                                 contentDescription = "Localized description",
                                 tint = marketplace_light_onPrimary,
-                                )
+                            )
                         }
+
 
                         LogoutButton(navController)
 
                     }}
+
+                    }
+                }
+
             )
         },
 
         ) { innerPadding ->
-        if (email != null && username !=null) {
-            HomeScrollContent(innerPadding, favProductViewModel,email,username,navController)
+        if (email != null && username != null) {
+            HomeScrollContent(innerPadding, favProductViewModel, email, username, navController)
         }
     }
 }
