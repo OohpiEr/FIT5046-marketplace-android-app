@@ -95,6 +95,7 @@ fun ChatScreen(navController: NavController) {
     val messageText = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
+    val username: String? = navController.previousBackStackEntry?.savedStateHandle?.get("username")
     Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -112,6 +113,7 @@ fun ChatScreen(navController: NavController) {
                     navigationIcon = {
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username", senderName)
                             navController.popBackStack() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
