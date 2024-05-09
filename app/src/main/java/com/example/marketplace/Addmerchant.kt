@@ -6,20 +6,22 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Base64
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -27,10 +29,10 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,25 +40,21 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -67,9 +65,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.marketplace.ui.theme.marketplace_light_onPrimary
+import com.example.marketplace.ui.theme.marketplace_light_onSurface
+import com.example.marketplace.ui.theme.marketplace_light_onSurfaceVariant
+import com.example.marketplace.ui.theme.marketplace_light_outline
 import com.example.marketplace.ui.theme.marketplace_light_primary
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -160,7 +160,9 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("home")}) {
-                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+                            Icon(Icons.Filled.Home,
+                                contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary)
                         }
                         IconButton(onClick = {
                             //Maintain user identify during navigation
@@ -171,7 +173,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
-                                tint = marketplace_light_onPrimary,
+                                tint = marketplace_light_onPrimary
                                 )
                         }
                         IconButton(onClick = {
@@ -182,7 +184,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "Localized description",
-                                tint = marketplace_light_onPrimary,
+                                tint = marketplace_light_outline,
                                 )
                         }
                         IconButton(onClick = {
@@ -196,78 +198,87 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                                 tint = marketplace_light_onPrimary,
                                 )
                         }
+                        LogoutButton(navController)
 
                     }}
             )
         },
     )   { paddingValues ->
         Column(modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(start = 4.dp, bottom = 100.dp) ) {
+            .fillMaxSize()
+            .padding(14.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-            Row(modifier = Modifier
-                .padding(start = 8.dp, top = 30.dp)) {
-                Box(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(200.dp)
-                    ,
-                    contentAlignment = Alignment.Center
-                )
-                {
-                    AsyncImage(
-                        model = imageUri,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(200.dp),
-                        contentScale = ContentScale.Crop
+            Box(
+                modifier = Modifier
+                    .size(370.dp, 150.dp)
+                    .border(
+                        BorderStroke(0.5.dp, color = marketplace_light_onSurfaceVariant), // Border stroke with color and width
+                        shape = RoundedCornerShape(12.dp)
                     )
-                    if (imageUri == null){
-                        Text("+ Add the image here", fontSize = 16.sp)
-                    }
-                }
-                Box(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(200.dp),
-                    contentAlignment = Alignment.Center
-                ){      Button(
-                    onClick = {
-                        launcher.launch(arrayOf("image/*"))
-                    }
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(text = "Pick Image")
-                }
+                    if (imageUri != null) {
+                        // Display the image
+                        AsyncImage(
+                            model = imageUri,
+                            contentDescription = null,
+                            modifier = Modifier.size(150.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        // Show placeholder text
+                        Text("+ Add the image here", fontSize = 18.sp)
+                    }
+
+                    // Button to pick image
+                    Button(
+                        onClick = {
+                            launcher.launch(arrayOf("image/*"))
+                        },
+                        modifier = Modifier.padding(top = 8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = marketplace_light_primary),
+                        ) {
+                        Text(text = "Pick Image")
+                    }
                 }
             }
+
+
+
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Product Name", fontStyle = FontStyle.Italic, fontSize = 12.sp) },
+                label = { Text("Product Name") },
+                singleLine = true,
                 modifier = Modifier
-                    .width(375.dp)
-                    .height(65.dp)
-//
+                    .fillMaxWidth()
+                    .padding(8.dp)
             )
             OutlinedTextField(
                 value = price,
                 onValueChange = { price = it },
-                label = { Text("Price", fontSize = 12.sp, fontStyle = FontStyle.Italic) },
+                label = { Text("Price") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
-                    .width(375.dp)
-                    .height(65.dp)
+                    .fillMaxWidth()
+                    .padding(8.dp)
 
             )
             OutlinedTextField(
                 value = quantity,
                 onValueChange = {  quantity = it },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = { Text("Quantity", fontSize = 12.sp, fontStyle = FontStyle.Italic) },
+                label = { Text("Quantity") },
                 modifier = Modifier
-                    .width(375.dp)
-                    .height(65.dp)
+                    .fillMaxWidth()
+                    .padding(8.dp)
 
             )
             Row(modifier = Modifier.padding(start = 8.dp, top = 8.dp), horizontalArrangement= Arrangement.Center,
@@ -313,41 +324,46 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                     OutlinedTextField(
                         value = address,
                         onValueChange = { address = it },
-                        label = { Text("address", fontSize = 10.sp, fontStyle = FontStyle.Italic) },
+                        label = { Text("address") },
                         modifier = Modifier
-                            .width(260.dp)
-                            .height(65.dp)
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
                     )
                 }
             }
             OutlinedTextField(
                 value = brand,
                 onValueChange = { brand = it },
-                label = { Text("Brand", fontSize = 12.sp, fontStyle = FontStyle.Italic) },
+                label = { Text("Brand") },
                 modifier = Modifier
-                    .width(375.dp)
-                    .height(65.dp)
+                    .fillMaxWidth()
+                    .padding(8.dp)
 
             )
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Description", fontSize = 12.sp, fontStyle = FontStyle.Italic) },
+                label = { Text("Description") },
                 modifier = Modifier
-                    .width(375.dp)
-                    .height(80.dp)
+                    .fillMaxWidth()
+                    .padding(8.dp)
 
             )
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 8.dp)) {
 
-                Button(onClick = { navController.navigate("Map") }) {
+                Button(onClick = { navController.navigate("Map") },
+                    colors = ButtonDefaults.buttonColors(containerColor = marketplace_light_primary),
+                ) {
                     Text("   Map   ")
                 }
-                Text("                                                      ")
+                Text("                                               ")
                 Button(onClick = {
 
                     if (validateFields()){showDialog = true}
-                     }) {
+                     },
+                    colors = ButtonDefaults.buttonColors(containerColor = marketplace_light_onSurface),
+
+                    ) {
                         Text("Confirm")}
 
                 }
@@ -407,18 +423,6 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, this)
             val byteArray = this.toByteArray()
             return Base64.encodeToString(byteArray, Base64.DEFAULT)
-        }
-    }
-    @Composable
-    fun AppNavigation(productViewModel: ProductViewModel) {
-        val navController = rememberNavController()
-        val map = Map()// Creates and remembers a NavController
-
-        // NavHost links the NavController to a navigation graph
-        NavHost(navController = navController, startDestination = "Addmerchant") {
-            composable("Addmerchant") { AddProduct(productViewModel,navController) }
-            composable("Map") { map.MapScreen(navController) }
-            // Add more destinations as needed
         }
     }
 }
