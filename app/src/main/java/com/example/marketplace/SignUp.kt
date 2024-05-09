@@ -52,6 +52,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.example.marketplace.ui.theme.marketplace_light_onPrimary
+import com.example.marketplace.ui.theme.marketplace_light_primary
 
 /*
 class SignUp : ComponentActivity() {
@@ -130,7 +132,7 @@ fun SignUp(navController: NavController, databaseReference: DatabaseReference) {
 
 
     Surface(
-        color = Color(0xFF6A8DCC),
+        color = marketplace_light_primary,
         modifier = Modifier.fillMaxSize()
     ) {
         Column(modifier = Modifier.fillMaxSize()) {

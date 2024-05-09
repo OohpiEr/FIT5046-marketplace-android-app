@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 
 val marketplace_light_primary = Color(0xFF6A8DCC)
 val marketplace_light_onPrimary = Color(0xFFFFFFFF)
-val marketplace_light_primaryContainer = Color(0xFFD7E3FF)
+val marketplace_light_primaryContainer = Color(0xFFBBC5F1)
 val marketplace_light_onPrimaryContainer = Color(0xFF001B3F)
 val marketplace_light_secondary = Color(0xFF565E71)
 val marketplace_light_onSecondary = Color(0xFFFFFFFF)
@@ -65,5 +65,3 @@ val marketplace_dark_surfaceTint = Color(0xFFABC7FF)
 val marketplace_dark_outlineVariant = Color(0xFF44474E)
 val marketplace_dark_scrim = Color(0xFF000000)
 
-
-val seed = Color(0xFF6A8DCC)
