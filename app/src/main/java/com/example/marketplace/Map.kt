@@ -117,7 +117,7 @@ fun MapScreen(navController: NavController) {
 
 
                     Button(
-                        onClick = {  navController.navigate("Addmerchant")},
+                        onClick = {  navController.popBackStack()},
                         modifier = Modifier
                             .align(Alignment.TopStart)
                             .padding(top = 32.dp, start = 16.dp)
