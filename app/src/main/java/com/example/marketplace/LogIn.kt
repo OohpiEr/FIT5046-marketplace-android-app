@@ -67,35 +67,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-/*
-class LogIn : ComponentActivity() {
-    private val favProductViewModel: FavProductViewModel by viewModels()
-    private val productViewModel: ProductViewModel by viewModels()
-    private val MessageViewModel: MessageViewModel by viewModels()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
-        val firebaseDatabase = FirebaseDatabase.getInstance();
-        val databaseReference = firebaseDatabase.getReference("UserInfo");
-
-
-        setContent {
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "login") {
-                composable("login") { SignIn(navController, databaseReference = databaseReference) }
-                composable("signup") { SignUp(navController, databaseReference = databaseReference) }
-                composable("contact") { ContactScreen(MessageViewModel,navController) }
-                composable("chat") { ChatScreen(navController) }
-                composable("Addmerchant") { Addmerchant().AddProduct(productViewModel,navController) }
-                composable("Map") { Map().MapScreen(navController) }
-                composable("Favourites") { FavScreen(navController, favProductViewModel) }
-                composable("home"){ BottomAppBar(navController, favProductViewModel, productViewModel,MessageViewModel)}
-            }
-        }
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-    }
-}*/
 
 class LogIn : ComponentActivity() {
     private val favProductViewModel: FavProductViewModel by viewModels()

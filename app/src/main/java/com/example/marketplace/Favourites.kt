@@ -33,11 +33,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.marketplace.ui.theme.marketplace_light_onPrimary
+import com.example.marketplace.ui.theme.marketplace_light_primary
 
 //class Favourites : ComponentActivity() {
 //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,8 +82,8 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    containerColor =  marketplace_light_primary,
+                    titleContentColor =  marketplace_light_onPrimary,
                 ),
                 title = {
                     Row(
@@ -98,7 +101,7 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
                     Icon(
                         imageVector = Icons.Filled.Favorite,
                         contentDescription = "Localized description",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = marketplace_light_onPrimary,
                         modifier = Modifier.padding(8.dp)
                     )
                 },
@@ -106,6 +109,7 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
         },
         bottomBar = {
             BottomAppBar(
+                containerColor =  marketplace_light_primary,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp),
@@ -119,7 +123,7 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("home")}) {
-                            Icon(Icons.Filled.Home, contentDescription = "Localized description")
+                            Icon(Icons.Filled.Home, contentDescription = "Localized description", tint = marketplace_light_onPrimary,)
                         }
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
@@ -129,6 +133,7 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary,
                             )
                         }
                         IconButton(onClick = {
@@ -138,6 +143,7 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
                             Icon(
                                 Icons.Filled.Add,
                                 contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary,
                             )
                         }
                         IconButton(onClick = {
@@ -147,6 +153,7 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
                             Icon(
                                 Icons.Filled.Favorite,
                                 contentDescription = "Localized description",
+                                tint = marketplace_light_onPrimary,
                             )
                         }
 
