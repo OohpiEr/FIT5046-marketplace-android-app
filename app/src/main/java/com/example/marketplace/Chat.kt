@@ -432,14 +432,6 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                         )
                 }
             },
-            actions = {
-                IconButton(onClick = {  }) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = "Localized description"
-                    )
-                }
-            },
             scrollBehavior = scrollBehavior,
         )
     },
