@@ -55,25 +55,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.example.marketplace.ui.theme.marketplace_light_onPrimary
 import com.example.marketplace.ui.theme.marketplace_light_primary
 
-/*
-class SignUp : ComponentActivity() {
-    @SuppressLint("UnrememberedMutableState")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        FirebaseApp.initializeApp(this)
-        val firebaseDatabase = FirebaseDatabase.getInstance()
-        val databaseReference = firebaseDatabase.getReference("UserInfo")
-        setContent {
-            val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "signup") {
-                composable("signup") { SignUp(navController = navController, databaseReference = databaseReference) }
-                composable("login") { SignIn(navController, databaseReference = databaseReference) }
-            }
-        }
-        WindowCompat.setDecorFitsSystemWindows(window,false)
-    }
-}*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Gender(selectedGender: String, onGenderSelected: (String) -> Unit) {
@@ -231,7 +213,7 @@ fun SignUp(navController: NavController, databaseReference: DatabaseReference) {
                                 .fillMaxWidth()
                                 .padding(top = 13.dp, start = 8.dp, end = 8.dp)
                                 .height(50.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6A8DCC)),
+                            colors = ButtonDefaults.buttonColors(containerColor = marketplace_light_primary),
                         ) {
                             Text(text = "Sign Up")
                         }
@@ -239,12 +221,12 @@ fun SignUp(navController: NavController, databaseReference: DatabaseReference) {
                         Button(
                             onClick = { navController.navigate("login") },
                             modifier = Modifier.fillMaxWidth().padding(top = 7.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFFFFF)),
+                            colors = ButtonDefaults.buttonColors(containerColor = marketplace_light_onPrimary),
                         ) {
                             Text(
                                 buildAnnotatedString {
                                     append("Back to ")
-                                    withStyle(style = SpanStyle(color = Color(0xFF6A8DCC))) {
+                                    withStyle(style = SpanStyle(color = marketplace_light_primary)) {
                                         append("Sign In")
                                     }
                                 },
@@ -381,8 +363,8 @@ private fun saveUserEmailToFirebase(
 
         // Create a UserObj instance with non-nullable parameters
         val userObj = UserObj(
-            userEmail = email,   // Ensure email is not null (shouldn't be null if !email.isNullOrEmpty())
-            userUsername = username ?: "",  // Use username if not null, otherwise default to empty string
+            userEmail = email,
+            userUsername = username ?: "",
             userPassword = "",
             userGender = ""
         )
@@ -390,11 +372,9 @@ private fun saveUserEmailToFirebase(
         // Store the user's data under the emailKey in the "UserInfo" node
         databaseReference.child(emailKey).setValue(userObj)
             .addOnSuccessListener {
-                // Data successfully saved to Firebase
                 onSuccess()
             }
             .addOnFailureListener { e ->
-                // Handle failure to save data
                 onFailure("Failed to save user data: ${e.message}")
             }
     } else {

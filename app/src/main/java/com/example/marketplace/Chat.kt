@@ -20,13 +20,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.BottomAppBar
@@ -68,8 +66,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.marketplace.ui.theme.marketplace_light_onPrimary
+import com.example.marketplace.ui.theme.marketplace_light_outline
 import com.example.marketplace.ui.theme.marketplace_light_primary
-import com.example.marketplace.ui.theme.marketplace_light_primaryContainer
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldPath
@@ -396,7 +394,6 @@ fun sendMessage(
 fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController) {
     val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
     val username: String? = navController.previousBackStackEntry?.savedStateHandle?.get("username")
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val contacts = remember { mutableStateOf<List<Contact>>(emptyList()) }
     LaunchedEffect(key1 = true) {
         migrateDataFromRealtimeToFirestore()
@@ -431,16 +428,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                         tint = marketplace_light_onPrimary,
                         )
                 }
-            },
-            actions = {
-                IconButton(onClick = {  }) {
-                    Icon(
-                        imageVector = Icons.Filled.Menu,
-                        contentDescription = "Localized description"
-                    )
-                }
-            },
-            scrollBehavior = scrollBehavior,
+            }
         )
     },
         bottomBar = {
@@ -473,7 +461,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             Icon(
                                 Icons.Filled.MailOutline,
                                 contentDescription = "Localized description",
-                                tint = marketplace_light_onPrimary,
+                                tint = marketplace_light_outline,
                             )
                         }
                         IconButton(onClick = {
@@ -498,6 +486,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                                 tint = marketplace_light_onPrimary,
                             )
                         }
+                        LogoutButton(navController)
 
                     }}
             )

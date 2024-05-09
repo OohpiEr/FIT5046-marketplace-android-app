@@ -26,10 +26,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -95,6 +100,7 @@ class LogIn : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 }
+
 
 
 @Composable
@@ -383,3 +389,79 @@ private fun firebaseAuthWithGoogle(context: Context, idToken: String, callback: 
     }
 
 
+
+fun LogoutAndNavigateToLogin(navController: NavController) {
+    val auth = FirebaseAuth.getInstance()
+    auth.signOut() // Clear Firebase authentication state
+
+    // Navigate back to the login screen
+    navController.navigate("login")
+}
+
+@Composable
+fun LogoutConfirmationDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirmLogout: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = {
+                Text(text = "Logout")
+            },
+            text = {
+                Text(text = "Are you sure you want to log out?")
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onConfirmLogout()
+                        onDismiss()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = marketplace_light_primary),
+                    ) {
+                    Text(text = "Confirm")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        onDismiss()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = marketplace_light_primary),
+                    ) {
+                    Text(text = "Cancel")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun LogoutButton(navController: NavController) {
+    // State to track if the logout confirmation dialog is shown
+    val showDialog = remember { mutableStateOf(false) }
+
+    IconButton(onClick = {
+        // Show the logout confirmation dialog
+        showDialog.value = true
+    }) {
+        Icon(
+            Icons.Filled.ExitToApp,
+            contentDescription = "Logout",
+            tint = Color.White,
+            modifier = Modifier.padding(8.dp)
+        )
+    }
+
+    // Display the confirmation dialog using the LogoutConfirmationDialog function
+    LogoutConfirmationDialog(
+        showDialog = showDialog.value,
+        onDismiss = { showDialog.value = false },
+        onConfirmLogout = {
+            // Perform logout action and navigate to login screen
+            LogoutAndNavigateToLogin(navController)
+        }
+    )
+}
