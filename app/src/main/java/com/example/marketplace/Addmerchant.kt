@@ -356,7 +356,9 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                                 "quantity" to quantity,
                                 "state" to selectedState,
                                 "address" to address,
-                                "description" to description
+                                "description" to description,
+                                "ownerEmail" to email,
+                                "ownerName" to username
                             )
                             productsCollection.add(newProduct)
                             Toast.makeText(context, "Product added successfully", Toast.LENGTH_SHORT).show()

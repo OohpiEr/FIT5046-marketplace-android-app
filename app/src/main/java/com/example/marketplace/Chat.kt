@@ -113,7 +113,7 @@ fun ChatScreen(navController: NavController) {
                     navigationIcon = {
                         IconButton(onClick = {
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
-                            navController.currentBackStackEntry?.savedStateHandle?.set("username", senderName)
+                            navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.popBackStack() }) {
                             Icon(
                                 imageVector = Icons.Filled.ArrowBack,
@@ -129,6 +129,7 @@ fun ChatScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = 20.dp)
+                    .padding(top = 100.dp)
             ) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
@@ -166,7 +167,9 @@ fun ChatScreen(navController: NavController) {
 
             snapshot?.let {
                 if (currentUserId != null) {
-                    processMessagesSnapshot(it, messages, currentUserId)
+                    if (receiverId != null) {
+                        processMessagesSnapshot(it, messages, currentUserId,receiverId)
+                    }
                 }
             }
         }
@@ -218,12 +221,12 @@ suspend fun migrateDataFromRealtimeToFirestore() {
 }
 
 
-fun processMessagesSnapshot(snapshot: QuerySnapshot, messages: MutableList<Message>, currentUserId: String) {
+fun processMessagesSnapshot(snapshot: QuerySnapshot, messages: MutableList<Message>, currentUserId: String,receiverId:String) {
     messages.clear()
     val newMessages = snapshot.toObjects(Message::class.java)
 
     val filteredMessages = newMessages.filter { message ->
-        message.senderId == currentUserId || message.receiverId == currentUserId
+        (message.senderId == currentUserId &&  message.receiverId == receiverId ) || (message.receiverId == currentUserId &&  message.senderId == receiverId)
     }
 
     val sortedMessages = filteredMessages.sortedBy { it.timestamp }
