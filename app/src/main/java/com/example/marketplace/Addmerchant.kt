@@ -156,12 +156,14 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                             .fillMaxWidth()
                     ){
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("home")}) {
                             Icon(Icons.Filled.Home, contentDescription = "Localized description")
                         }
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("contact")
@@ -173,6 +175,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                                 )
                         }
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("Addmerchant") }) {
@@ -183,6 +186,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                                 )
                         }
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("Favourites") }) {

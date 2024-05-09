@@ -120,12 +120,14 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
                             .fillMaxWidth()
                     ){
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("home")}) {
                             Icon(Icons.Filled.Home, contentDescription = "Localized description", tint = marketplace_light_onPrimary,)
                         }
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("contact")
@@ -137,6 +139,7 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
                             )
                         }
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("Addmerchant") }) {
@@ -147,6 +150,7 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
                             )
                         }
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("Favourites") }) {

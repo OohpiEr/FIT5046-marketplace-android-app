@@ -2,6 +2,7 @@ package com.example.marketplace
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -92,12 +93,14 @@ fun ChatScreen(navController: NavController) {
     val messagesCollection = remember { db.collection("message") }
     val messages = remember { mutableStateListOf<Message>() }
     var listenerRegistration by remember { mutableStateOf(ListenerRegistration { }) }
+    //Get parameters from previous screens for sending message
     val currentUserId: String? = navController.previousBackStackEntry?.savedStateHandle?.get("Id")
     val senderName: String? = navController.previousBackStackEntry?.savedStateHandle?.get("sender")
     val receiverId: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
     val receiverName: String? = navController.previousBackStackEntry?.savedStateHandle?.get("receiver")
     val messageText = remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
+    //Get parameters from previous screens for main identity of user
     val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
     val username: String? = navController.previousBackStackEntry?.savedStateHandle?.get("username")
     Scaffold(
@@ -151,6 +154,7 @@ fun ChatScreen(navController: NavController) {
                     onMessageTextChanged = { messageText.value = it },
                     onSendMessage = {
                         if (messageText.value.isNotBlank()) {
+                            //Avoiding null pointer issue
                             if (currentUserId != null && receiverId != null && senderName != null && receiverName != null) {
                                 sendMessage(messagesCollection, messageText.value, currentUserId, receiverId,senderName,receiverName)
                             }
@@ -192,6 +196,7 @@ fun ChatScreen(navController: NavController) {
 
 
 suspend fun migrateDataFromRealtimeToFirestore() {
+    //Fetch user data from real time database and migrate to firestore
     val realtimeDatabaseReference = FirebaseDatabase.getInstance().getReference("UserInfo")
     val firestore = FirebaseFirestore.getInstance()
     val usersCollection = firestore.collection("users")
@@ -210,13 +215,13 @@ suspend fun migrateDataFromRealtimeToFirestore() {
 
             println("Document with ID $userId already exists. Skipping.")
         } else {
-
             val userData = hashMapOf(
                 "email" to userEmail,
                 "name" to userUsername,
                 "password" to userPassword,
                 "gender" to userGender
             )
+            //Copy data into firestore
             usersCollection.document(userId).set(userData).await()
             println("Document with ID $userId added.")
         }
@@ -227,9 +232,10 @@ suspend fun migrateDataFromRealtimeToFirestore() {
 
 
 fun processMessagesSnapshot(snapshot: QuerySnapshot, messages: MutableList<Message>, currentUserId: String,receiverId:String) {
+    //Fetch message data from firebase
     messages.clear()
     val newMessages = snapshot.toObjects(Message::class.java)
-
+    //Filter message to get message associated with current user
     val filteredMessages = newMessages.filter { message ->
         (message.senderId == currentUserId &&  message.receiverId == receiverId ) || (message.receiverId == currentUserId &&  message.senderId == receiverId)
     }
@@ -300,7 +306,7 @@ fun MessageBubble(message: Message, currentUserId: String) {
                                 .padding(horizontal = 8.dp)
                         ) {
                             Text(
-                                text = "You" + ":       at " + formattedTime,
+                                text = "You:       at $formattedTime",
                                 modifier = Modifier.padding(8.dp),
                                 textAlign =  TextAlign.End,
                                 style = TextStyle(fontSize = 12.sp)
@@ -384,6 +390,7 @@ fun sendMessage(
     messagesCollection.add(message)
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController) {
@@ -449,6 +456,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             .fillMaxWidth()
                     ){
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("home")}) {
@@ -457,6 +465,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                                 tint = marketplace_light_onPrimary,)
                         }
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("contact")
@@ -468,6 +477,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             )
                         }
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("Addmerchant") }) {
@@ -478,6 +488,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                             )
                         }
                         IconButton(onClick = {
+                            //Maintain user identify during navigation
                             navController.currentBackStackEntry?.savedStateHandle?.set("email", email)
                             navController.currentBackStackEntry?.savedStateHandle?.set("username",username)
                             navController.navigate("Favourites") }) {
@@ -517,6 +528,7 @@ fun ContactItem(contact: Contact, navController: NavController, name: String, em
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
+                //Pass data to Chat screen and record the identify of sender and receiver
                 navController.currentBackStackEntry?.savedStateHandle?.set("email", contact.email)
                 navController.currentBackStackEntry?.savedStateHandle?.set("receiver", contact.name)
                 navController.currentBackStackEntry?.savedStateHandle?.set("sender", name)
@@ -563,6 +575,7 @@ class MessageViewModel : ViewModel() {
         val senderIDs = mutableListOf<String>()
         val receiverIDs = mutableListOf<String>()
         val contacts = mutableStateOf<List<Contact>>(emptyList())
+        //Fetch message and extract message associated with current user to build the contact list.
         viewModelScope.launch(Dispatchers.IO) {
             db.collection("message")
                 .whereEqualTo("senderId", currentUserID)
@@ -581,7 +594,7 @@ class MessageViewModel : ViewModel() {
                                 senderID?.let { receiverIDs.add(it) }
                             }
                             val uniqueIDs = (senderIDs + receiverIDs).distinct()
-
+                            //Use Ids to fetch all the user info and build contact list
                             if (uniqueIDs.isNotEmpty()) {
                                 db.collection("users").whereIn(FieldPath.documentId(), uniqueIDs).get().addOnSuccessListener { querySnapshot ->
                                     val contactsList = mutableListOf<Contact>()
@@ -602,7 +615,6 @@ class MessageViewModel : ViewModel() {
                 }
                 .addOnFailureListener { exception ->
                     Log.e("MessageViewModel", "Error fetching messages", exception)
-                    // Handle failure
                 }
         }
     }
