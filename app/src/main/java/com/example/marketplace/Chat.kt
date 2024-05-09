@@ -429,7 +429,6 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                         )
                 }
             },
-            scrollBehavior = scrollBehavior,
         )
     },
         bottomBar = {
