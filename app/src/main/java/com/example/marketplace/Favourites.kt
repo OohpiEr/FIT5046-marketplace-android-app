@@ -20,12 +20,10 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-//import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -33,50 +31,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.marketplace.ui.theme.marketplace_light_onPrimary
+import com.example.marketplace.ui.theme.marketplace_light_outline
 import com.example.marketplace.ui.theme.marketplace_light_primary
 
-//class Favourites : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            FavScreen()
-//        }
-//
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
-//    }
-//
-//}
-
-
-//@Composable
-//@Preview
-//fun PreviewFavouritesScreen() {
-//    val title = "Favourites"
-//
-//    MarketplaceTheme {
-//        FavScreen()
-//    }
-//}
-
-/*
-* https://developer.android.com/jetpack/compose/components/app-bars
-*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavScreen(navController: NavHostController, favProductViewModel: FavProductViewModel) {
     val title = "Favourites"
     val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
     val username: String? = navController.previousBackStackEntry?.savedStateHandle?.get("username")
-
-//    val favProducts by favProductViewModel.allFavProducts.observeAsState(emptyList())
-
 
     Scaffold(
         topBar = {
@@ -153,9 +122,10 @@ fun FavScreen(navController: NavHostController, favProductViewModel: FavProductV
                             Icon(
                                 Icons.Filled.Favorite,
                                 contentDescription = "Localized description",
-                                tint = marketplace_light_onPrimary,
+                                tint = marketplace_light_outline,
                             )
                         }
+                        LogoutButton(navController)
 
                     }}
             )
@@ -192,57 +162,7 @@ fun FavScrollContent(innerPadding: PaddingValues, favProductViewModel: FavProduc
     )
 
     if (insertDialog.value) {
-        selectedProduct?.let { it.value?.let { it1 -> favProductViewModel.deleteFavProduct(it1) } }
+        selectedProduct.let { it.value?.let { it1 -> favProductViewModel.deleteFavProduct(it1) } }
         Toast.makeText(context,"Remove from Favourites Successfully!", Toast.LENGTH_SHORT).show()
     }
 }
-
-//@Composable
-//fun FavItemCard() {
-//    ElevatedCard(
-//        colors = CardDefaults.cardColors(
-//            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-//        ),
-//    ) {
-//        Column {
-//            Row() {
-//                Image(
-//                    painter = painterResource(id = R.drawable.milk),
-//                    contentDescription = null
-//                )
-//            }
-//            Row(
-//                modifier = Modifier
-//                    .height(56.dp)
-//                    .fillMaxWidth(),
-//                verticalAlignment = Alignment.CenterVertically
-//            )
-//            {
-//                Text(
-//                    text = "Milk",
-//                    modifier = Modifier
-//                        .padding(16.dp),
-//                    textAlign = TextAlign.Center,
-//                )
-//                Spacer(Modifier.weight(1f))
-//                IconButton(onClick = { /* do something */ }) {
-//                    Icon(
-//                        imageVector = Icons.Filled.FavoriteBorder,
-//                        contentDescription = "Localized description"
-//                    )
-//                }
-//            }
-//            Row()
-//            {
-//                Text(
-//                    text = "$50",
-//                    modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
-//                    textAlign = TextAlign.Center,
-//                    fontWeight = FontWeight.Bold,
-//                    fontSize = 20.sp
-//                )
-//            }
-//        }
-//
-//    }
-//}

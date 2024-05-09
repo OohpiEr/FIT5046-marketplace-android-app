@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 data class Product(
     @PrimaryKey(autoGenerate = true)
     val uid: Int = 0,
-//    val firestoreId: String = "",
     val photo: String = "",
     val name: String = "",
     val price: String = "",

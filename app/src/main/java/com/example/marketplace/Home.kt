@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -42,6 +41,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.LocalContext
 import com.example.marketplace.ui.theme.marketplace_light_onPrimary
+import com.example.marketplace.ui.theme.marketplace_light_outline
 import com.example.marketplace.ui.theme.marketplace_light_primary
 
 
@@ -97,7 +97,7 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                             navController.navigate("home")}) {
                             Icon(Icons.Filled.Home,
                                 contentDescription = "Localized description",
-                                tint = marketplace_light_onPrimary,
+                                tint = marketplace_light_outline,
                             )
                         }
                         IconButton(onClick = {
@@ -132,6 +132,8 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
                                 )
                         }
 
+                        LogoutButton(navController)
+
                     }}
             )
         },
@@ -141,52 +143,8 @@ fun HomeScreen(navController: NavController, favProductViewModel: FavProductView
             HomeScrollContent(innerPadding, favProductViewModel,email,username,navController)
         }
     }
-
-
-//    if (insertDialog.value) {
-//        selectedProduct?.let { favProductViewModel.insertFavProduct(it) }
-//    }
-//        InsertSubjectDialog(
-//            onDismiss = { insertDialog.value = false },
-//            onSave = { subjectName ->
-//               favProductViewModel.insertProduct(Product(name = subjectName))
-//            }
-//        )
 }
 
-//@Composable
-//fun InsertSubjectDialog(
-//    onDismiss: () -> Unit,
-//    onSave: (String) -> Unit
-//) {
-//    var productName by remember { mutableStateOf("") }
-//    AlertDialog(
-//        onDismissRequest = onDismiss,
-//        title = { Text("Favourite Product") },
-//        confirmButton = {
-//            Button(
-//                onClick = {
-//                    onSave(productName)
-//                    onDismiss()
-//                }
-//            ) {
-//                Text("Save")
-//            }
-//        },
-//        dismissButton = {
-//            Button(onClick = onDismiss) {
-//                Text("Cancel")
-//            }
-//        },
-////        text = {
-////            TextField(
-////                value = productName,
-////                onValueChange = { productName = it },
-////                modifier = Modifier.fillMaxWidth()
-////            )
-////        }
-//    )
-//}
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun HomeScrollContent(
@@ -226,8 +184,8 @@ fun HomeScrollContent(
             .fillMaxSize()
     )
     if (insertDialog.value) {
-        selectedProduct?.let { it.value?.let { it1 -> favProductViewModel.insertFavProduct(it1) }
-        insertDialog.value = false
+        selectedProduct.let { it.value?.let { it1 -> favProductViewModel.insertFavProduct(it1) }
+            insertDialog.value = false
             Toast.makeText(context,"Add to Favourites Successfully!", Toast.LENGTH_SHORT).show()
         }
     }
