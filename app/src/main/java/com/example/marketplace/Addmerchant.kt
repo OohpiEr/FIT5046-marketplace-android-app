@@ -100,7 +100,6 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
             imageBase64 = bitmap?.let { bitmapToBase64(it) }  // Update this line to set the base64 string
         }
     }
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
@@ -143,7 +142,6 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                         )
                 }
             },
-            scrollBehavior = scrollBehavior,
         )
     },
         bottomBar = {
@@ -203,7 +201,9 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                         }
                         LogoutButton(navController)
 
-                    }}
+                    }
+                          },
+
             )
         },
     )   { paddingValues ->
@@ -216,7 +216,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
 
             Box(
                 modifier = Modifier
-                    .size(370.dp, 150.dp)
+                    .size(370.dp, 120.dp)
                     .border(
                         BorderStroke(0.5.dp, color = marketplace_light_onSurfaceVariant), // Border stroke with color and width
                         shape = RoundedCornerShape(12.dp)
@@ -252,8 +252,6 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                     }
                 }
             }
-
-
 
             OutlinedTextField(
                 value = name,

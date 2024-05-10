@@ -127,7 +127,7 @@ fun ChatScreen(navController: NavController) {
                                 )
                         }
                     },
-                            scrollBehavior = scrollBehavior,
+                    scrollBehavior = scrollBehavior,
                 )
 
         },
@@ -396,6 +396,8 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
     val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
     val username: String? = navController.previousBackStackEntry?.savedStateHandle?.get("username")
     val contacts = remember { mutableStateOf<List<Contact>>(emptyList()) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     LaunchedEffect(key1 = true) {
         migrateDataFromRealtimeToFirestore()
         if (email != null) {
@@ -430,6 +432,7 @@ fun ContactScreen(viewModel: MessageViewModel, navController: NavHostController)
                         )
                 }
             },
+            scrollBehavior = scrollBehavior,
         )
     },
         bottomBar = {
