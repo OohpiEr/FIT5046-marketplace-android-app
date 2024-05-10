@@ -45,6 +45,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -99,6 +100,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
             imageBase64 = bitmap?.let { bitmapToBase64(it) }  // Update this line to set the base64 string
         }
     }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
@@ -141,6 +143,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                         )
                 }
             },
+            scrollBehavior = scrollBehavior,
         )
     },
         bottomBar = {
@@ -206,7 +209,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
     )   { paddingValues ->
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(14.dp),
+            .padding(paddingValues),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -402,6 +405,7 @@ fun AddProduct(productViewModel: ProductViewModel,navController: NavController){
                 )
             }
         }
+
     }
 
 }

@@ -40,6 +40,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -82,7 +83,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
-//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ChatScreen(navController: NavController) {
     val db = Firebase.firestore
@@ -99,6 +99,8 @@ fun ChatScreen(navController: NavController) {
     //Get parameters from previous screens for main identity of user
     val email: String? = navController.previousBackStackEntry?.savedStateHandle?.get("email")
     val username: String? = navController.previousBackStackEntry?.savedStateHandle?.get("username")
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -124,16 +126,16 @@ fun ChatScreen(navController: NavController) {
                                 tint = marketplace_light_onPrimary,
                                 )
                         }
-                    }
+                    },
+                            scrollBehavior = scrollBehavior,
                 )
 
         },
-        content = { innerPadding ->
+        content = {innerpadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-//                    .padding(top = 100.dp)
+                    .padding(innerpadding)
             ) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
@@ -161,6 +163,7 @@ fun ChatScreen(navController: NavController) {
                 )
             }
         }
+
     )
 
     LaunchedEffect(Unit) {
