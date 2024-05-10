@@ -54,7 +54,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.example.marketplace.ui.theme.marketplace_light_onPrimary
 import com.example.marketplace.ui.theme.marketplace_light_primary
-
+import java.security.MessageDigest
+import java.math.BigInteger
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -183,7 +184,7 @@ fun SignUp(navController: NavController, databaseReference: DatabaseReference) {
                         Button(
                             onClick = {
                                 if(validateInput(context,email, username, password, selectedGender)) {
-                                    val userObj = UserObj(email, username, password, selectedGender)
+                                    val userObj = UserObj(email, username, hashPassword(password), selectedGender)
                                     if(validateEmailFormat(email)){
                                         val emailKey = email.replace(".", ",")
                                         // Directly set the value of userObj to the database reference
@@ -385,4 +386,10 @@ private fun saveUserEmailToFirebase(
 fun validateEmailFormat(email: String): Boolean {
     val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
     return email.matches(emailRegex.toRegex())
+}
+
+fun hashPassword(password: String): String {
+    val md = MessageDigest.getInstance("SHA-256")
+    val digest = md.digest(password.toByteArray(Charsets.UTF_8))
+    return BigInteger(1, digest).toString(16)
 }

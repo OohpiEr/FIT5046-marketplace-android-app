@@ -181,7 +181,7 @@ fun SignIn(navController: NavController, databaseReference: DatabaseReference) {
                                             genderDB = it.userGender
                                             usernameDB = it.userUsername
 
-                                            if(emailDB == email && passwordDB == password) {
+                                            if(emailDB == email && passwordDB == hashPassword(password)) {
                                                 Toast.makeText(context, "Log In Succeed!", Toast.LENGTH_SHORT).show()
                                                 navController.currentBackStackEntry?.savedStateHandle?.set("email", emailDB)
                                                 navController.currentBackStackEntry?.savedStateHandle?.set("username", usernameDB)
