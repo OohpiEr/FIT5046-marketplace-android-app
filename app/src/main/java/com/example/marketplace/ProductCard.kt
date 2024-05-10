@@ -98,7 +98,7 @@ fun ProductCard(
             }
             Row {
                 Text(
-                    text = product.price,
+                    text = "$" + product.price,
                     modifier = Modifier.padding(start = 16.dp, bottom = 16.dp),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,

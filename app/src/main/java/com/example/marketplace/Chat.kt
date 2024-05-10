@@ -82,7 +82,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ChatScreen(navController: NavController) {
     val db = Firebase.firestore
@@ -128,12 +128,12 @@ fun ChatScreen(navController: NavController) {
                 )
 
         },
-        content = {
+        content = { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 28.dp)
-                    .padding(top = 100.dp)
+                    .padding(innerPadding)
+//                    .padding(top = 100.dp)
             ) {
                 LazyColumn(
                     modifier = Modifier.weight(1f)
